@@ -16,12 +16,12 @@ class _BlockState extends State<Block> {
     return Center(
       child: Draggable(
         onDragStarted: () {
-          Navigator.of(context).pop();
+          // Navigator.of(context).pop();
         },
         feedback: SvgPicture.asset(
           'assets/bloco1.svg',
-          height: 100,
-          width: 100,
+          height: 130,
+          width: 130,
         ),
         child: Padding(
           padding: const EdgeInsets.all(7.0),
