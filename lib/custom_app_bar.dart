@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key});
@@ -9,17 +10,25 @@ class CustomAppBar extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
       height: 60,
       alignment: Alignment.center,
-
       decoration: BoxDecoration(
         color: const Color(0xFF2E9AD1),
         border: Border.all(
-            width: 6, color: const Color.fromRGBO(19, 31, 109, 0.612)),
+          width: 5,
+          color: const Color(0xFF172585),
+        ),
         borderRadius: BorderRadius.circular(100),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.menu, size: 34)),
+          IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                color: Color(0xFF172585),
+                Icons.menu,
+                size: 35,
+              )),
           const Text("Project Name",
               style: TextStyle(
                   fontWeight: FontWeight.w700,
@@ -33,11 +42,13 @@ class CustomAppBar extends StatelessWidget {
                     ),
                   ])),
           IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.play_circle_outline_sharp,
-                size: 34,
-              )),
+            onPressed: () {},
+            icon: SvgPicture.asset(
+              'assets/start.svg',
+              height: 120,
+              width: 120,
+            ),
+          ),
         ],
       ),
       // child: Row(
