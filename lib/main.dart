@@ -19,10 +19,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         home: Scaffold(
       backgroundColor: const Color(0xFFE9E9E9),
-      body: const Center(
-        child: CustomAppBar(),
-        // child: ModalInspecao(),
-      ),
+      body: const CustomAppBar(),
+      // child: ModalInspecao(),
 
       // appBar: AppBar(
       //   title: Text('nome do projeto'),
