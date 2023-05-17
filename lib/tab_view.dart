@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:roboeducacional/block.dart';
 
 class TabView extends StatefulWidget {
@@ -10,6 +7,68 @@ class TabView extends StatefulWidget {
   @override
   State<TabView> createState() => _TabViewState();
 }
+
+class Bloco {
+  final String title;
+  final String image;
+  final String description;
+  final double value;
+  final String link;
+
+  Bloco(
+      {required this.title,
+      required this.image,
+      required this.description,
+      required this.value,
+      required this.link});
+}
+
+final Map<String, List<Bloco>> blocos = {
+  "movimentos": [
+    Bloco(
+        title: "Frente",
+        image: 'assets/bloco-frente.svg',
+        description: "Este bloco tem a função de andar para frente.",
+        value: 0,
+        link: "#"),
+    Bloco(
+        title: "Atrás",
+        image: "assets/bloco-atras.svg",
+        description: "Este bloco tem a função de andar para trás.",
+        value: 0,
+        link: "#"),
+    Bloco(
+        title: "Girar para Direita",
+        image: 'assets/bloco-rotacao-direita.svg',
+        description: "Este bloco tem a função de rotacionar para direita.",
+        value: 0,
+        link: "#"),
+    Bloco(
+        title: "Girar para esquerda",
+        image: 'assets/bloco-rotacao.svg',
+        description: "Este bloco tem a função de rotacionar para a esquerda.",
+        value: 0,
+        link: "#"),
+  ],
+  "inicializadores": [
+    Bloco(
+        title: "Inicial",
+        image: 'assets/Inicializador-1.svg',
+        description:
+            "Este bloco tem a função de inicializar a sequência lógica.",
+        value: 0,
+        link: "#"),
+  ],
+  "repetidores": [
+    Bloco(
+        title: "Repetidor",
+        image: '',
+        description:
+            "Este bloco tem a função de repetir todos os blocos que estão dentro deste.",
+        value: 0,
+        link: "#"),
+  ]
+};
 
 class _TabViewState extends State<TabView> {
   @override
