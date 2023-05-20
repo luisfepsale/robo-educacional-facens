@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:roboeducacional/add_button.dart';
 import 'package:roboeducacional/bloc_in_line.dart';
+import 'package:roboeducacional/block_model.dart';
 import 'package:roboeducacional/custom_app_bar.dart';
+import 'package:roboeducacional/custom_drawer.dart';
 import 'package:roboeducacional/tab_view.dart';
 
 class MainScreen extends StatefulWidget {
@@ -13,10 +15,27 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   bool isShowingModal = false;
+  List<Bloco> blocksList = [
+    Bloco(
+      title: "Girar para Direita",
+      image: 'assets/bloco-atras.svg',
+      description: "Este bloco tem a função de rotacionar para direita.",
+      value: 0,
+      link: "#",
+    ),
+    Bloco(
+      title: "Girar para Direita",
+      image: 'assets/bloco-frente.svg',
+      description: "Este bloco tem a função de rotacionar para direita.",
+      value: 0,
+      link: "#",
+    )
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const CustomDrawer(),
       backgroundColor: const Color(0xFFE9E9E9),
       body: SafeArea(
         child: Stack(
@@ -28,14 +47,7 @@ class _MainScreenState extends State<MainScreen> {
                   const CustomAppBar(),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: const [
-                        BlocInLine(),
-                        BlocInLine(),
-                        BlocInLine(),
-                        BlocInLine(),
-                      ],
-                    ),
+                    child: Row(children: _createBlocksInLine(blocksList)),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -80,4 +92,8 @@ class _MainScreenState extends State<MainScreen> {
       isShowingModal = true;
     });
   }
+}
+
+List<Widget> _createBlocksInLine(List blocksList) {
+  return blocksList.map((e) => BlocInLine(block: e)).toList();
 }

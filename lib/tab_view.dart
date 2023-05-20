@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:roboeducacional/block.dart';
+import 'package:roboeducacional/block_model.dart';
 
 class TabView extends StatefulWidget {
   const TabView({super.key, required this.onDragStarted});
@@ -10,130 +11,133 @@ class TabView extends StatefulWidget {
   final Function() onDragStarted;
 }
 
+final Map<String, List<Bloco>> blocos = {
+  "movimentos": [
+    Bloco(
+        title: "Frente",
+        image: 'assets/bloco-frente.svg',
+        description: "Este bloco tem a função de andar para frente.",
+        value: 0,
+        link: "#"),
+    Bloco(
+        title: "Atrás",
+        image: "assets/bloco-atras.svg",
+        description: "Este bloco tem a função de andar para trás.",
+        value: 0,
+        link: "#"),
+    Bloco(
+        title: "Girar para Direita",
+        image: 'assets/bloco-rotacao-direita.svg',
+        description: "Este bloco tem a função de rotacionar para direita.",
+        value: 0,
+        link: "#"),
+    Bloco(
+        title: "Girar para esquerda",
+        image: 'assets/bloco-rotacao.svg',
+        description: "Este bloco tem a função de rotacionar para a esquerda.",
+        value: 0,
+        link: "#"),
+  ],
+  "inicializadores": [
+    Bloco(
+        title: "Inicial",
+        image: 'assets/Inicializador-1.svg',
+        description:
+            "Este bloco tem a função de inicializar a sequência lógica.",
+        value: 0,
+        link: "#"),
+  ],
+  // "repetidores": [
+  //   Bloco(
+  //       title: "Repetidor",
+  //       image: '',
+  //       description:
+  //           "Este bloco tem a função de repetir todos os blocos que estão dentro deste.",
+  //       value: 0,
+  //       link: "#"),
+  // ]
+};
+
 class _TabViewState extends State<TabView> {
-  @override
-  List<String> tabs = [
-    "Movimento",
-    "Iniciadores",
-    "Repetidores",
-    "Finalizadores",
-  ];
-  int current = 0;
-
-  double changePositionedOfLine() {
-    switch (current) {
-      case 0:
-        return 20;
-      case 1:
-        return 100;
-      case 2:
-        return 192;
-      case 3:
-        return 263;
-      default:
-        return 0;
-    }
-  }
-
-  double changeContainerWidth() {
-    switch (current) {
-      case 0:
-        return 50;
-      case 1:
-        return 50;
-      case 2:
-        return 50;
-      case 3:
-        return 50;
-      default:
-        return 0;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Container(
       color: Colors.white,
       height: size.height * 0.5,
-      child: Column(
-        children: [
+      child: DefaultTabController(
+        length: blocos.keys.length,
+        child: Column(children: [
           Container(
-            margin: const EdgeInsets.only(top: 15),
+            margin: const EdgeInsets.only(top: 5),
             width: size.width,
-            height: size.height * 0.05,
-            child: Stack(
+            height: 60,
+            child: Column(
               children: [
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: SizedBox(
-                    width: size.width,
-                    height: size.height * 0.04,
-                    child: ListView.builder(
-                        physics: const BouncingScrollPhysics(),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: tabs.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: EdgeInsets.only(
-                                left: index == 0 ? 10 : 23, top: 7),
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  current = index;
-                                });
-                              },
-                              child: Text(
-                                tabs[index],
-                                style: TextStyle(
-                                  fontSize: current == index ? 16 : 14,
-                                  fontWeight: current == index
-                                      ? FontWeight.w400
-                                      : FontWeight.w300,
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
+                TabBar(
+                  isScrollable: true,
+                  indicatorPadding: const EdgeInsets.only(
+                    top: 0,
+                    right: -9,
+                    left: 0,
+                    bottom: 8,
                   ),
-                ),
-                AnimatedPositioned(
-                  curve: Curves.fastLinearToSlowEaseIn,
-                  bottom: 0,
-                  left: changePositionedOfLine(),
-                  duration: const Duration(milliseconds: 500),
-                  child: AnimatedContainer(
-                    margin: const EdgeInsets.only(left: 10),
-                    width: changeContainerWidth(),
-                    height: size.height * 0.008,
-                    decoration: BoxDecoration(
-                      color: Colors.deepPurpleAccent,
-                      borderRadius: BorderRadius.circular(5),
+                  indicator: const BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Color(0xFF2E9AD1),
+                        width: 2.5,
+                      ),
                     ),
-                    duration: const Duration(milliseconds: 1000),
-                    curve: Curves.fastLinearToSlowEaseIn,
                   ),
+                  indicatorSize: TabBarIndicatorSize.label,
+                  labelStyle: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 18),
+                  tabs: _createTabs(blocos.keys.toList()),
                 ),
               ],
             ),
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: GridView.count(
-                crossAxisCount: 3,
-                crossAxisSpacing: 25,
-                mainAxisSpacing: 15,
-                children: List.generate(100, (index) {
-                  return Block(onDragStarted: widget.onDragStarted);
-                }),
-              ),
-            ),
-          ),
-        ],
+          // _createTabViews(blocos).first
+          Expanded(child: TabBarView(children: _createTabViews(blocos)))
+        ]),
       ),
     );
   }
+}
+
+List<Widget> _createTabs(List keys) {
+  return keys
+      .map(
+        (e) => Tab(
+            child: Text(_uppercaseFirstLetter(e),
+                style: const TextStyle(color: Colors.blue))),
+      )
+      .toList();
+}
+
+_uppercaseFirstLetter(String value) =>
+    value[0].toUpperCase() + value.substring(1);
+
+List<Widget> _createTabViews(Map<String, List<Bloco>> blockMap) {
+  final keys = blockMap.keys;
+
+  final list = keys
+      .map((e) => blockMap[e]!
+          .map((e) => Block(
+                block: e,
+              ))
+          .toList())
+      .toList();
+
+  final gridList = list
+      .map((e) => GridView.count(
+            crossAxisCount: 3,
+            crossAxisSpacing: 25,
+            mainAxisSpacing: 15,
+            children: e.map((e) => e).toList(),
+          ))
+      .toList();
+
+  return gridList;
 }
