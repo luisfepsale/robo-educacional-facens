@@ -1,26 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:roboeducacional/block.dart';
+import 'package:roboeducacional/block_model.dart';
 
 class TabView extends StatefulWidget {
-  const TabView({super.key});
+  const TabView({super.key, required this.onDragStarted});
 
   @override
   State<TabView> createState() => _TabViewState();
-}
 
-class Bloco {
-  final String title;
-  final String image;
-  final String description;
-  final double value;
-  final String link;
-
-  Bloco(
-      {required this.title,
-      required this.image,
-      required this.description,
-      required this.value,
-      required this.link});
+  final Function() onDragStarted;
 }
 
 final Map<String, List<Bloco>> blocos = {
@@ -59,83 +47,97 @@ final Map<String, List<Bloco>> blocos = {
         value: 0,
         link: "#"),
   ],
-  "repetidores": [
-    Bloco(
-        title: "Repetidor",
-        image: '',
-        description:
-            "Este bloco tem a função de repetir todos os blocos que estão dentro deste.",
-        value: 0,
-        link: "#"),
-  ]
+  // "repetidores": [
+  //   Bloco(
+  //       title: "Repetidor",
+  //       image: '',
+  //       description:
+  //           "Este bloco tem a função de repetir todos os blocos que estão dentro deste.",
+  //       value: 0,
+  //       link: "#"),
+  // ]
 };
 
 class _TabViewState extends State<TabView> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return Column(
-      children: [
-        Container(
-          margin: const EdgeInsets.only(top: 5),
-          width: size.width,
-          height: 60,
-          child: const DefaultTabController(
-            length: 3,
-            child: TabBar(
-              isScrollable: true,
-              indicatorPadding: EdgeInsets.only(
-                top: 0,
-                right: -9,
-                left: 0,
-                bottom: 8,
-              ),
-              indicator: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: Color(0xFF2E9AD1),
-                    width: 2.5,
+    return Container(
+      color: Colors.white,
+      height: size.height * 0.5,
+      child: DefaultTabController(
+        length: blocos.keys.length,
+        child: Column(children: [
+          Container(
+            margin: const EdgeInsets.only(top: 5),
+            width: size.width,
+            height: 60,
+            child: Column(
+              children: [
+                TabBar(
+                  isScrollable: true,
+                  indicatorPadding: const EdgeInsets.only(
+                    top: 0,
+                    right: -9,
+                    left: 0,
+                    bottom: 8,
                   ),
-                ),
-              ),
-              indicatorSize: TabBarIndicatorSize.label,
-              labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              tabs: [
-                Tab(
-                  child: Text(
-                    "Movimento",
-                    style: TextStyle(color: Colors.blue),
+                  indicator: const BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Color(0xFF2E9AD1),
+                        width: 2.5,
+                      ),
+                    ),
                   ),
-                ),
-                Tab(
-                  child: Text(
-                    "Inicializadorse",
-                  ),
-                ),
-                Tab(
-                  child: Text(
-                    "Repetidore",
-                    style: TextStyle(color: Colors.black),
-                  ),
+                  indicatorSize: TabBarIndicatorSize.label,
+                  labelStyle: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 18),
+                  tabs: _createTabs(blocos.keys.toList()),
                 ),
               ],
             ),
           ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: GridView.count(
-              crossAxisCount: 3,
-              crossAxisSpacing: 25,
-              mainAxisSpacing: 15,
-              children: List.generate(100, (index) {
-                return const Block();
-              }),
-            ),
-          ),
-        ),
-      ],
+          // _createTabViews(blocos).first
+          Expanded(child: TabBarView(children: _createTabViews(blocos)))
+        ]),
+      ),
     );
   }
+}
+
+List<Widget> _createTabs(List keys) {
+  return keys
+      .map(
+        (e) => Tab(
+            child: Text(_uppercaseFirstLetter(e),
+                style: const TextStyle(color: Colors.blue))),
+      )
+      .toList();
+}
+
+_uppercaseFirstLetter(String value) =>
+    value[0].toUpperCase() + value.substring(1);
+
+List<Widget> _createTabViews(Map<String, List<Bloco>> blockMap) {
+  final keys = blockMap.keys;
+
+  final list = keys
+      .map((e) => blockMap[e]!
+          .map((e) => Block(
+                block: e,
+              ))
+          .toList())
+      .toList();
+
+  final gridList = list
+      .map((e) => GridView.count(
+            crossAxisCount: 3,
+            crossAxisSpacing: 25,
+            mainAxisSpacing: 15,
+            children: e.map((e) => e).toList(),
+          ))
+      .toList();
+
+  return gridList;
 }
