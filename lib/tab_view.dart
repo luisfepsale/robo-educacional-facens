@@ -111,7 +111,7 @@ List<Widget> _createTabs(List keys) {
       .map(
         (e) => Tab(
             child: Text(_uppercaseFirstLetter(e),
-                style: const TextStyle(color: Colors.blue))),
+                style: const TextStyle(color: Colors.black))),
       )
       .toList();
 }
