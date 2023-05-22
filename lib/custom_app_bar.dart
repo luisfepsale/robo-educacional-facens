@@ -7,7 +7,7 @@ class CustomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       height: 60,
       alignment: Alignment.center,
       decoration: BoxDecoration(
@@ -31,18 +31,14 @@ class CustomAppBar extends StatelessWidget {
                 Icons.menu,
                 size: 35,
               )),
-          const Text("Project Name",
-              style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20,
-                  color: Colors.white,
-                  shadows: <Shadow>[
-                    Shadow(
-                      offset: Offset(2.0, 2.0),
-                      blurRadius: 10.0,
-                      color: Color.fromARGB(255, 0, 0, 0),
-                    ),
-                  ])),
+          const Text(
+            "Project Name",
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 20,
+              color: Colors.white,
+            ),
+          ),
           IconButton(
             onPressed: () {},
             icon: SvgPicture.asset(

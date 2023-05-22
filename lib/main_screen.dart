@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:roboeducacional/add_button.dart';
 import 'package:roboeducacional/bloc_in_line.dart';
 import 'package:roboeducacional/block_model.dart';
@@ -49,11 +50,24 @@ class _MainScreenState extends State<MainScreen> {
                     scrollDirection: Axis.horizontal,
                     child: Row(children: _createBlocksInLine(blocksList)),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: AddButton(
-                      onTap: _openModal,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: AddButton(
+                          onTap: _openModal,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: SvgPicture.asset(
+                          'assets/lixo.svg',
+                          height: 80,
+                          width: 80,
+                        ),
+                      ),
+                    ],
                   )
                 ]),
             Container(

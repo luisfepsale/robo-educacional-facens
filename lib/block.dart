@@ -27,7 +27,7 @@ class _BlockState extends State<Block> {
         width: 100,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(7.0),
+        padding: const EdgeInsets.all(0),
         child: SvgPicture.asset(
           width: 100,
           block.image,
