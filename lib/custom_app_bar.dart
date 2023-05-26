@@ -23,14 +23,15 @@ class CustomAppBar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           IconButton(
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              icon: const Icon(
-                color: Color(0xFF172585),
-                Icons.menu,
-                size: 35,
-              )),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+            icon: SvgPicture.asset(
+              'assets/menu.svg',
+              height: 100,
+              width: 100,
+            ),
+          ),
           const Text(
             "Project Name",
             style: TextStyle(
@@ -42,9 +43,7 @@ class CustomAppBar extends StatelessWidget {
           IconButton(
             onPressed: () {},
             icon: SvgPicture.asset(
-              'assets/start.svg',
-              height: 120,
-              width: 120,
+              'assets/startt.svg',
             ),
           ),
         ],

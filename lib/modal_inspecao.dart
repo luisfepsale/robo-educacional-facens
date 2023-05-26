@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
+import 'block_model.dart';
+
 class ModalInspecao extends StatefulWidget {
-  const ModalInspecao({super.key});
+  const ModalInspecao({
+    super.key,
+    required this.block,
+  });
+
+  final Bloco block;
 
   @override
   State<ModalInspecao> createState() => _ModalInspecaoState();

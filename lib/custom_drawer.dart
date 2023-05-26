@@ -45,11 +45,6 @@ class CustomDrawer extends StatelessWidget {
               title: Text('Salvar no Computador',
                   style: TextStyle(fontSize: 20, color: Colors.white)),
             ),
-            Divider(
-              thickness: 3,
-              height: 20,
-              color: Color(0xFF172585),
-            ),
             ListTile(
               leading: Icon(
                 Icons.info_outline,
