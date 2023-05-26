@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:roboeducacional/add_button.dart';
 import 'package:roboeducacional/bloc_in_line.dart';
 import 'package:roboeducacional/block_model.dart';
 import 'package:roboeducacional/custom_app_bar.dart';
 import 'package:roboeducacional/custom_drawer.dart';
 import 'package:roboeducacional/tab_view.dart';
+import 'package:roboeducacional/trash_can.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -59,14 +59,7 @@ class _MainScreenState extends State<MainScreen> {
                           onTap: _openModal,
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: SvgPicture.asset(
-                          'assets/lixo.svg',
-                          height: 80,
-                          width: 80,
-                        ),
-                      ),
+                      const TrashCan(),
                     ],
                   )
                 ]),

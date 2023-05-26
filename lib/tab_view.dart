@@ -47,15 +47,6 @@ final Map<String, List<Bloco>> blocos = {
         value: 0,
         link: "#"),
   ],
-  // "repetidores": [
-  //   Bloco(
-  //       title: "Repetidor",
-  //       image: '',
-  //       description:
-  //           "Este bloco tem a função de repetir todos os blocos que estão dentro deste.",
-  //       value: 0,
-  //       link: "#"),
-  // ]
 };
 
 class _TabViewState extends State<TabView> {
@@ -99,7 +90,9 @@ class _TabViewState extends State<TabView> {
             ),
           ),
           // _createTabViews(blocos).first
-          Expanded(child: TabBarView(children: _createTabViews(blocos)))
+          Expanded(
+              child: TabBarView(
+                  children: _createTabViews(blocos, widget.onDragStarted)))
         ]),
       ),
     );
@@ -119,13 +112,14 @@ List<Widget> _createTabs(List keys) {
 _uppercaseFirstLetter(String value) =>
     value[0].toUpperCase() + value.substring(1);
 
-List<Widget> _createTabViews(Map<String, List<Bloco>> blockMap) {
+List<Widget> _createTabViews(Map<String, List<Bloco>> blockMap, onDragStarted) {
   final keys = blockMap.keys;
 
   final list = keys
       .map((e) => blockMap[e]!
           .map((e) => Block(
                 block: e,
+                onDragStarted: onDragStarted,
               ))
           .toList())
       .toList();
