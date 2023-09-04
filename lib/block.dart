@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:roboeducacional/block_model.dart';
+import 'package:roboeducacional/modal_inspecao.dart';
 
 class Block extends StatelessWidget {
   const Block({
@@ -24,7 +25,12 @@ class Block extends StatelessWidget {
       onDragStarted: onDragStarted,
       child: InkWell(
         onTap: () {
-          print("message");
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return ModalInspecao(block: block);
+            },
+          );
         },
         child: Padding(
           padding: const EdgeInsets.all(0),

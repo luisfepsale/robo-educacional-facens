@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:roboeducacional/block.dart';
 import 'package:roboeducacional/block_model.dart';
+import 'package:roboeducacional/main_screen.dart';
 
 class BlocInLine extends StatefulWidget {
-  const BlocInLine({super.key, required this.block});
+  const BlocInLine(
+      {super.key, required this.block, required this.adicionarBloco});
   final Bloco block;
+  final VoidCallback? adicionarBloco;
 
   @override
   State<BlocInLine> createState() => _BlocInLineState();
@@ -32,6 +35,7 @@ class _BlocInLineState extends State<BlocInLine> {
           },
           onAccept: (data) {
             setState(() {
+              adicionarBloco(elemento, index);
               showPreview = false;
             });
           },

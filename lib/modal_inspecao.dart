@@ -38,7 +38,7 @@ class _ModalInspecaoState extends State<ModalInspecao> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
                 Text(
-                  "Classe: Nome do movimento",
+                  'Classe: Nome do movimento',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,

@@ -19,7 +19,7 @@ class _MainScreenState extends State<MainScreen> {
   List<Bloco> blocksList = [
     Bloco(
       title: "Girar para Direita",
-      image: 'assets/bloco-atras.svg',
+      image: 'assets/inicializador-1.svg',
       description: "Este bloco tem a função de rotacionar para direita.",
       value: 0,
       link: "#",
@@ -32,6 +32,10 @@ class _MainScreenState extends State<MainScreen> {
       link: "#",
     )
   ];
+
+  adicionarBloco(Bloco elemento, int index) {
+    blocksList.insert(index, elemento);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +52,9 @@ class _MainScreenState extends State<MainScreen> {
                   const CustomAppBar(),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    child: Row(children: _createBlocksInLine(blocksList)),
+                    child: Row(
+                        children:
+                            _createBlocksInLine(blocksList, adicionarBloco)),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -101,6 +107,8 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
-List<Widget> _createBlocksInLine(List blocksList) {
-  return blocksList.map((e) => BlocInLine(block: e)).toList();
+List<Widget> _createBlocksInLine(List blocksList, adicionarBloco) {
+  return blocksList
+      .map((e) => BlocInLine(block: e, adicionarBloco: adicionarBloco))
+      .toList();
 }
