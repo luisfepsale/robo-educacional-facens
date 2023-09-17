@@ -6,6 +6,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,6 +21,8 @@ class MyApp extends StatelessWidget {
 }
 
 class BluetoothScreen extends StatefulWidget {
+  const BluetoothScreen({super.key});
+
   @override
   _BluetoothScreenState createState() => _BluetoothScreenState();
 }
@@ -34,7 +38,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
   }
 
   void searchDevices() async {
-    flutterBlue.startScan(timeout: Duration(seconds: 4));
+    flutterBlue.startScan(timeout: const Duration(seconds: 4));
 
     flutterBlue.scanResults.listen((results) {
       for (ScanResult result in results) {
@@ -48,12 +52,12 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
     await device.connect();
 
     List<int> array = [1, 2, 3, 4, 5];
-    await device.writeCharacteristic(
-      serviceId,
-      characteristicId,
-      array,
-      type: CharacteristicWriteType.withResponse,
-    );
+    // await device.writeCharacteristic(
+    //   serviceId,
+    //   characteristicId,
+    //   array,
+    //   type: CharacteristicWriteType.withResponse,
+    // );
 
     device.disconnect();
   }
@@ -62,9 +66,9 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Bluetooth Example'),
+        title: const Text('Bluetooth Example'),
       ),
-      body: Center(
+      body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
