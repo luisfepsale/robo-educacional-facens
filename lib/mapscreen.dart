@@ -7,6 +7,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,6 +22,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MapScreen extends StatefulWidget {
+  const MapScreen({super.key});
+
   @override
   _MapScreenState createState() => _MapScreenState();
 }
@@ -31,7 +35,7 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Map Example'),
+        title: const Text('Map Example'),
       ),
       body: FlutterMap(
         mapController: mapController,
@@ -51,16 +55,16 @@ class _MapScreenState extends State<MapScreen> {
         children: [
           FloatingActionButton(
             onPressed: () {
-              mapController.zoomIn(); // Aumentar o zoom
+              // mapController.zoomIn(); // Aumentar o zoom
             },
-            child: Icon(Icons.add),
+            child: const Icon(Icons.add),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           FloatingActionButton(
             onPressed: () {
-              mapController.zoomOut(); // Diminuir o zoom
+              // mapController.zoomOut(); // Diminuir o zoom
             },
-            child: Icon(Icons.remove),
+            child: const Icon(Icons.remove),
           ),
         ],
       ),
