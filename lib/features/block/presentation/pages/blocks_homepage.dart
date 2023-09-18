@@ -18,6 +18,15 @@ class BlocksHomePage extends StatelessWidget {
               children: [
                 BlocksInLine(),
                 _TrashCan(),
+                // ElevatedButton(
+                //     onPressed: () {
+                //       showDialog(
+                //           context: context,
+                //           builder: (context) {
+                //             return const BluetoothScreen(listLogic: []);
+                //           });
+                //     },
+                //     child: const Text('Executar'))
               ],
             ),
           ],
