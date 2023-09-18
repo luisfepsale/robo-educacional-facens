@@ -6,7 +6,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
 }
 
 class BluetoothScreen extends StatefulWidget {
-  const BluetoothScreen({super.key});
+  const BluetoothScreen({Key key}) : super(key: key);
 
   @override
   _BluetoothScreenState createState() => _BluetoothScreenState();
@@ -30,6 +30,7 @@ class BluetoothScreen extends StatefulWidget {
 class _BluetoothScreenState extends State<BluetoothScreen> {
   FlutterBlue flutterBlue = FlutterBlue.instance;
   List<BluetoothDevice> devices = [];
+  BluetoothDevice connectedDevice;
 
   @override
   void initState() {
@@ -42,45 +43,122 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
 
     flutterBlue.scanResults.listen((results) {
       for (ScanResult result in results) {
-        devices.add(result.device);
+        if (!devices.contains(result.device)) {
+          setState(() {
+            devices.add(result.device);
+          });
+        }
       }
     });
 
+    await Future.delayed(Duration(seconds: 4));
     flutterBlue.stopScan();
-
-    BluetoothDevice device = devices.first;
-    await device.connect();
-
-    List<int> array = [1, 2, 3, 4, 5];
-    // await device.writeCharacteristic(
-    //   serviceId,
-    //   characteristicId,
-    //   array,
-    //   type: CharacteristicWriteType.withResponse,
-    // );
-
-    device.disconnect();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Bluetooth Example'),
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
       ),
-      body: const Center(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+          border: Border.all(
+            width: 3,
+            color: Colors.blue,
+          ),
+        ),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Sending Array via Bluetooth',
-              style: TextStyle(fontSize: 24),
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: const [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Bluetooth Teste',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Color(0xFF2E9AD1),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: Color(0xFF585858),
+                  ),
+                ),
+                SizedBox(height: 20),
+              ],
             ),
-            SizedBox(height: 20),
-            CircularProgressIndicator(),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: devices.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(devices[index].name),
+                  onTap: () {
+                    connectToDevice(devices[index]);
+                  },
+                );
+              },
+            ),
+            ElevatedButton(
+              onPressed: () {
+                sendListToDevice();
+              },
+              child: Text('Enviar Lista'),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void connectToDevice(BluetoothDevice device) async {
+    await device.connect();
+    setState(() {
+      connectedDevice = device;
+    });
+  }
+
+  void sendListToDevice() async {
+    if (connectedDevice != null) {
+      List<int> listToSend = [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]; // Sua lista de dados a ser enviada
+
+      List<BluetoothService> services =
+          await connectedDevice.discoverServices();
+      BluetoothCharacteristic characteristic;
+
+      for (BluetoothService service in services) {
+        for (BluetoothCharacteristic c in service.characteristics) {
+          if (c.properties.write) {
+            characteristic = c;
+            break;
+          }
+        }
+      }
+
+      if (characteristic != null) {
+        await connectedDevice.writeCharacteristic(
+          characteristic,
+          listToSend,
+          type: CharacteristicWriteType.withResponse,
+        );
+      }
+    }
   }
 }
