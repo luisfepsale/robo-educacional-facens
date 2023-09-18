@@ -1,30 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Bluetooth Example',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: BluetoothScreen(),
-    );
-  }
-}
-
 class BluetoothScreen extends StatefulWidget {
-  const BluetoothScreen({Key key}) : super(key: key);
+  const BluetoothScreen({
+    super.key,
+    required this.listLogic,
+  });
+
+  final List listLogic;
 
   @override
-  _BluetoothScreenState createState() => _BluetoothScreenState();
+  State<BluetoothScreen> createState() => _BluetoothScreenState();
 }
 
 class _BluetoothScreenState extends State<BluetoothScreen> {
@@ -51,7 +37,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
       }
     });
 
-    await Future.delayed(Duration(seconds: 4));
+    await Future.delayed(const Duration(seconds: 4));
     flutterBlue.stopScan();
   }
 
@@ -74,8 +60,8 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            Column(
+          children: [
+            const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -114,7 +100,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
               onPressed: () {
                 sendListToDevice();
               },
-              child: Text('Enviar Lista'),
+              child: const Text('Enviar Lista'),
             ),
           ],
         ),
