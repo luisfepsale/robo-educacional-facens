@@ -29,14 +29,14 @@ class _ModalInspecaoState extends State<ModalInspecao> {
               color: Colors.blue,
             )),
         padding: const EdgeInsets.all(20.0),
-        child: Column(
+        child: const Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
                   'Classe: Nome do movimento',
                   style: TextStyle(
@@ -59,7 +59,7 @@ class _ModalInspecaoState extends State<ModalInspecao> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: const [
+              children: [
                 Text('Ajuda',
                     style: TextStyle(
                       fontSize: 18,
