@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:roboeducacional/features/block/domain/block_entity.dart';
 import 'package:roboeducacional/features/block/presentation/pages/bloc/blocks_in_line_bloc.dart';
 
@@ -9,17 +10,14 @@ class BlocksInLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(40.0),
-        child: Column(
-          children: [
-            BlocBuilder<BlocksInLineBloc, BlocksInLineState>(
-              builder: (context, state) {
-                return const DraggableListOfBlocs();
-              },
-            ),
-          ],
-        ),
+      child: Column(
+        children: [
+          BlocBuilder<BlocksInLineBloc, BlocksInLineState>(
+            builder: (context, state) {
+              return const DraggableListOfBlocs();
+            },
+          ),
+        ],
       ),
     );
   }
@@ -33,17 +31,22 @@ class DraggableListOfBlocs extends StatelessWidget {
     return BlocBuilder<BlocksInLineBloc, BlocksInLineState>(
       builder: (context, state) {
         final listOfBlocks = state.blocks;
+
         return Flexible(
-            child: ListView.separated(
-          separatorBuilder: (context, index) => const SizedBox(
-            height: 10,
+          child: ListView.builder(
+            itemCount: listOfBlocks.length,
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.all(20),
+            itemBuilder: (context, index) => SizedOverflowBox(
+              size: const Size(50, 60),
+              child: DraggableBlock(
+                block: listOfBlocks[index],
+                positionOnLine: index,
+              ),
+            ),
           ),
-          shrinkWrap: true,
-          itemCount: listOfBlocks.length,
-          itemBuilder: (context, index) {
-            return DraggableBlock(positionOnLine: index);
-          },
-        ));
+        );
       },
     );
   }
@@ -56,13 +59,11 @@ class DraggableBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final block = context.read<BlocksInLineBloc>().state.blocks[positionOnLine];
-    return Center(
-      child: Draggable(
-        childWhenDragging: const SizedBox(),
-        data: positionOnLine,
-        feedback: BlockWidget(block: block),
-        child: DragTargetWrapper(block: block, positionOnLine: positionOnLine),
-      ),
+    return Draggable(
+      childWhenDragging: const SizedBox(),
+      data: positionOnLine,
+      feedback: BlockWidget(block: block),
+      child: DragTargetWrapper(block: block, positionOnLine: positionOnLine),
     );
   }
 }
@@ -103,14 +104,10 @@ class BlockWidget extends StatelessWidget {
     return Opacity(
       opacity: opacity,
       child: Container(
-        constraints: const BoxConstraints(maxHeight: 50, maxWidth: 50),
-        color: Colors.green,
-        child: Center(
-          child: Text(
-            '${block.id}',
-            style: const TextStyle(fontSize: 16),
-          ),
-        ),
+        constraints: const BoxConstraints(maxHeight: 60, maxWidth: 60),
+        width: 133,
+        height: 133,
+        child: SvgPicture.asset('assets/base-block.svg'),
       ),
     );
   }

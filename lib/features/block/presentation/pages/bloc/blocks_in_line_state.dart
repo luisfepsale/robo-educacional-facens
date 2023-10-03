@@ -7,8 +7,7 @@ class BlocksInLineState extends Equatable {
     this.blocks = const [
       BlockEntity(id: 1),
       BlockEntity(id: 2),
-      BlockEntity(id: 3),
-      BlockEntity(id: 4),
+      BlockEntity(id: 0),
     ],
   });
 
