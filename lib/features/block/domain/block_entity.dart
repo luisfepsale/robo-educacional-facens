@@ -1,12 +1,101 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+
 import 'package:equatable/equatable.dart';
 
 class BlockEntity extends Equatable {
-  final int id;
+  final String title;
+  final String image;
+  final String description;
+  final int value;
+  final String link;
 
   const BlockEntity({
-    required this.id,
+    this.title = '',
+    this.image = 'assets/base-block.svg',
+    this.description = '',
+    this.value = 1,
+    this.link = '',
   });
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [value, title, image, description, link];
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'title': title,
+      'image': image,
+      'description': description,
+      'value': value,
+      'link': link,
+    };
+  }
+
+  factory BlockEntity.fromMap(Map<String, dynamic> map) {
+    return BlockEntity(
+      title: map['title'] as String,
+      image: map['image'] as String,
+      description: map['description'] as String,
+      value: map['value'] as int,
+      link: map['link'] as String,
+    );
+  }
+
+  BlockEntity copyWith({
+    String? title,
+    String? image,
+    String? description,
+    int? value,
+    String? link,
+  }) {
+    return BlockEntity(
+      title: title ?? this.title,
+      image: image ?? this.image,
+      description: description ?? this.description,
+      value: value ?? this.value,
+      link: link ?? this.link,
+    );
+  }
 }
+
+const Map<String, List<Map<String, dynamic>>> blockLibrary = {
+  "movimentos": [
+    {
+      "title": "Frente",
+      "image": "assets/bloco-frente.svg",
+      "description": "Este bloco tem a função de andar para frente.",
+      "value": 0,
+      "link": "#"
+    },
+    {
+      "title": "Atrás",
+      "image": "assets/bloco-atras.svg",
+      "description": "Este bloco tem a função de andar para trás.",
+      "value": 0,
+      "link": "#"
+    },
+    {
+      "title": "Girar para Direita",
+      "image": "assets/bloco-rotacao-direita.svg",
+      "description": "Este bloco tem a função de rotacionar para direita.",
+      "value": 0,
+      "link": "#"
+    },
+    {
+      "title": "Girar para esquerda",
+      "image": "assets/bloco-rotacao.svg",
+      "description": "Este bloco tem a função de rotacionar para a esquerda.",
+      "value": 0,
+      "link": "#"
+    }
+  ],
+  "controladores": [
+    {
+      "title": "Repetidor",
+      "image": "assets/ainda_não_tem.png",
+      "description":
+          "Este bloco tem a função de repetir os blocos que esta dentro dele.",
+      "value": 0,
+      "link": "#"
+    }
+  ]
+};

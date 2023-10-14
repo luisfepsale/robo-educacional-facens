@@ -20,7 +20,13 @@ class BlocksInLineBloc extends Bloc<BlocksInLineEvent, BlocksInLineState> {
   }
 
   _changeBlockPositions(
-      BlocksInLineEventChangePositions event, Emitter<BlocksInLineState> emit) {
+    BlocksInLineEventChangePositions event,
+    Emitter<BlocksInLineState> emit,
+  ) {
+    if (event.pastPositionOnLine == event.positionOnLine) {
+      return;
+    }
+
     final list = state.blocks.toList();
     final bloc = list[event.pastPositionOnLine];
     list
@@ -31,6 +37,9 @@ class BlocksInLineBloc extends Bloc<BlocksInLineEvent, BlocksInLineState> {
   }
 
   _addBlock(BlocksInLineEventAddBlock event, Emitter<BlocksInLineState> emit) {
-    emit(state.copyWith(blocks: state.blocks.toList()..add(event.block)));
+    final list = state.blocks.toList();
+    list.insert(event.positionOnLine + 1, event.block);
+
+    emit(state.copyWith(blocks: list));
   }
 }
