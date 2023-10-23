@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:roboeducacional/custom_app_bar.dart';
+import 'package:roboeducacional/features/block/domain/block_entity.dart';
 import 'package:roboeducacional/features/block/presentation/pages/bloc/blocks_in_line_bloc.dart';
+import 'package:roboeducacional/features/block/presentation/pages/bloc/widgets/block_library/block_library.dart';
+import 'package:roboeducacional/features/block/presentation/pages/bloc/widgets/block_library/cubit/block_library_cubit.dart';
 import 'package:roboeducacional/features/block/presentation/pages/blocks_line_page.dart';
 
 class BlocksHomePage extends StatelessWidget {
@@ -10,8 +13,15 @@ class BlocksHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => BlocksInLineBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => BlocksInLineBloc(),
+        ),
+        BlocProvider(
+          create: (context) => BlockLibraryCubit(),
+        ),
+      ],
       child: const Scaffold(
         backgroundColor: Color(0xFFE9E9E9),
         body: Scaffold(
@@ -20,7 +30,13 @@ class BlocksHomePage extends StatelessWidget {
               Column(
                 children: [
                   CustomAppBar(),
-                  BlocksInLine(),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        BlocksInLine(),
+                      ],
+                    ),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -30,6 +46,7 @@ class BlocksHomePage extends StatelessWidget {
                   )
                 ],
               ),
+              BlocksLibrary(),
             ],
           ),
         ),
@@ -48,10 +65,8 @@ class _AddButton extends StatelessWidget {
       icon: SvgPicture.asset(
         'assets/add_button.svg',
       ),
-      onPressed: () {
-        final listOfBlocks = context.read<BlocksInLineBloc>().state.blocks;
-        final result = listOfBlocks.map((e) => '${e.id}').toList();
-        print(result);
+      onPressed: () async {
+        context.read<BlockLibraryCubit>().openLibrary();
       },
     );
   }
@@ -64,10 +79,18 @@ class _TrashCan extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<BlocksInLineBloc, BlocksInLineState>(
       builder: (context, state) {
-        return DragTarget<int>(
-          onAccept: (data) => context
-              .read<BlocksInLineBloc>()
-              .add(BlocksInLineEventRemoveBlock(positionOnLine: data)),
+        return DragTarget(
+          onAccept: (data) {
+            if (data is BlockEntity) {
+              return;
+            }
+
+            if (data is int) {
+              context
+                  .read<BlocksInLineBloc>()
+                  .add(BlocksInLineEventRemoveBlock(positionOnLine: data));
+            }
+          },
           builder: (_, __, ___) => SizedBox(
             child: Padding(
               padding: const EdgeInsets.all(16.0),

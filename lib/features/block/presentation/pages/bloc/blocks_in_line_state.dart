@@ -4,11 +4,7 @@ class BlocksInLineState extends Equatable {
   final List<BlockEntity> blocks;
 
   const BlocksInLineState({
-    this.blocks = const [
-      BlockEntity(id: 1),
-      BlockEntity(id: 2),
-      BlockEntity(id: 0),
-    ],
+    this.blocks = const [],
   });
 
   BlocksInLineState copyWith({
