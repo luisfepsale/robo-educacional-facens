@@ -458,3 +458,45 @@ class DeviceScreen extends StatelessWidget {
     );
   }
 }
+
+
+// void sendMessageToDevice() async {
+//   String serviceUuid = "0000180d-0000-1000-8000-00805f9b34fb"; // UUID do serviço no ESP32
+//   String characteristicUuid = "00002a37-0000-1000-8000-00805f9b34fb"; // UUID da característica no ESP32
+//   String message = "Hello ESP32"; // Mensagem a ser enviada
+
+//   Guid serviceGuid = Guid(serviceUuid);
+//   Guid characteristicGuid = Guid(characteristicUuid);
+
+//   List<BluetoothService> services = await connectedDevice.discoverServices();
+//   BluetoothCharacteristic characteristic;
+
+//   for (BluetoothService service in services) {
+//     if (service.uuid == serviceGuid) {
+//       for (BluetoothCharacteristic c in service.characteristics) {
+//         if (c.uuid == characteristicGuid) {
+//           characteristic = c;
+//           break;
+//         }
+//       }
+//       break;
+//     }
+//   }
+
+//   if (characteristic != null) {
+//     await characteristic.write(utf8.encode(message), withoutResponse: true);
+//   }
+// }
+
+// void sendListToDevice() async {
+//   String message = "Hello ESP32"; // Mensagem a ser enviada
+
+//   await characteristic.write(utf8.encode(message), withoutResponse: true);
+// }
+
+// onWritePressed: () async {
+//   String message = "Hello ESP32"; // Mensagem a ser enviada
+
+//   await characteristic.write(utf8.encode(message), withoutResponse: true);
+//   await c.read();
+// },
