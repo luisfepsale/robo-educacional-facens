@@ -91,7 +91,7 @@ const Map<String, List<Map<String, dynamic>>> blockLibrary = {
   "controladores": [
     {
       "title": "Repetidor",
-      "image": "assets/ainda_não_tem.png",
+      "image": "assets/repeater.svg",
       "description":
           "Este bloco tem a função de repetir os blocos que esta dentro dele.",
       "value": 0,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:roboeducacional/features/block/domain/block_entity.dart';
+import 'package:roboeducacional/features/block/domain/wrapper_entity.dart';
 import 'package:roboeducacional/features/block/presentation/pages/bloc/blocks_in_line_bloc.dart';
 import 'package:roboeducacional/features/block/presentation/pages/bloc/widgets/cupertino_number_picker/cupertino_number_picker.dart';
 
@@ -25,28 +26,114 @@ class DraggableListOfBlocs extends StatelessWidget {
     return BlocBuilder<BlocksInLineBloc, BlocksInLineState>(
       builder: (context, state) {
         final listOfBlocks = state.blocks;
+
         return Flexible(
           child: ListView.builder(
-            itemCount: listOfBlocks.isEmpty ? 1 : listOfBlocks.length,
+            itemCount: listOfBlocks.isEmpty ? 1 : listOfBlocks.length + 1,
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.all(20),
             itemBuilder: (context, index) {
+              final newIndex = index - 1;
+              Widget child;
+              if (index == 0) {
+                child = const _InitialBlock();
+              } else if (listOfBlocks[newIndex] is RepeaterEntity) {
+                child = _RepeaterBlock(newIndex);
+              } else {
+                child = DraggableBlock(
+                  block: listOfBlocks[newIndex],
+                  positionOnLine: newIndex,
+                );
+              }
               return Center(
                 child: SizedBox(
-                  height: 120,
-                  child: index == 0
-                      ? const _InitialBlock()
-                      : DraggableBlock(
-                          block: listOfBlocks[index],
-                          positionOnLine: index - 1,
-                        ),
+                  height: 110,
+                  child: child,
                 ),
               );
             },
           ),
         );
       },
+    );
+  }
+}
+
+class _RepeaterBlock extends StatelessWidget {
+  const _RepeaterBlock(this.listIndex);
+  final int listIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    RepeaterEntity subList =
+        context.read<BlocksInLineBloc>().state.blocks[listIndex];
+
+    final widget = Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFFF8C00),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          width: 3,
+          color: const Color(0xFFA52E00),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 10),
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemCount: subList.list.length,
+              itemBuilder: (context, index) => DraggableBlock(
+                block: subList.list[index],
+                positionOnLine: listIndex,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SvgPicture.asset(
+                  'assets/repeater-icon.svg',
+                  height: 50,
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFF8C00),
+                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    border: Border.all(
+                      width: 2,
+                      color: const Color(0xFFA52E00),
+                    ),
+                  ),
+                  child: const Text(
+                    '10',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+
+    return SizedBox(
+      child: Draggable(
+        data: listIndex,
+        feedback: const SizedBox(),
+        childWhenDragging: Opacity(opacity: 0.5, child: widget),
+        child: widget,
+      ),
     );
   }
 }
@@ -63,9 +150,7 @@ class _InitialBlock extends StatelessWidget {
           final value = await CupertinoNumberPicket.show(context, data.value);
 
           bloc.add(BlocksInLineEventAddBlock(
-            block: (data).copyWith(
-              value: value,
-            ),
+            block: (data).copyWith(value: value),
             positionOnLine: -1,
           ));
         }
@@ -98,14 +183,15 @@ class _InitialBlock extends StatelessWidget {
 class DraggableBlock extends StatelessWidget {
   const DraggableBlock({
     super.key,
-    block,
+    required this.block,
     required this.positionOnLine,
   });
+
   final int positionOnLine;
+  final BlockEntity block;
 
   @override
   Widget build(BuildContext context) {
-    final block = context.read<BlocksInLineBloc>().state.blocks[positionOnLine];
     return DragTarget(
       onAccept: (data) async {
         final bloc = context.read<BlocksInLineBloc>();

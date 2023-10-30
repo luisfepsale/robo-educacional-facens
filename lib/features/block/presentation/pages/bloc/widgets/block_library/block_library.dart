@@ -144,12 +144,13 @@ List<Widget> _createTabViews(
       .map(
         (e) => blockLibrary[e]!.map((e) {
           final BlockEntity blockEntity = BlockEntity.fromMap(e);
+
           return BlocBuilder<BlockLibraryCubit, BlockLibraryState>(
             builder: (context, state) {
               return Column(
                 children: [
                   Draggable(
-                    data: blockEntity,
+                    data: BlockEntity.fromMap(e),
                     feedback: BlockWidget.halfOpacity(
                       block: BlockEntity.fromMap(e),
                     ),
@@ -161,7 +162,7 @@ List<Widget> _createTabViews(
                     ),
                   ),
                   Text(
-                    blockEntity.title,
+                    BlockEntity.fromMap(e).title,
                     textAlign: TextAlign.center,
                   )
                 ],
