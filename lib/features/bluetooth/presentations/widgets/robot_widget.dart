@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:roboeducacional/features/bluetooth/presentations/dialogs/modal_connected.dart';
 
 class RobotWidget extends StatelessWidget {
   const RobotWidget({
@@ -22,8 +23,14 @@ class RobotWidget extends StatelessWidget {
         ),
       ),
       child: GestureDetector(
-        onTap: () {
-          print("oi");
+        onTap: () async {
+          item.device.connect().then(
+                (value) => showDialog(
+                  context: context,
+                  builder: (context) =>
+                      ModalBluetoothConnected(device: item.device),
+                ),
+              );
         },
         child: Row(
           children: [

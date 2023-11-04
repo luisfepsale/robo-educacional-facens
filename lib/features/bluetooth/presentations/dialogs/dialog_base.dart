@@ -26,7 +26,7 @@ class DialogBase extends StatelessWidget {
         height: 351,
         child: Column(
           children: [
-            _buildTitle(),
+            showTitle ? _buildTitle() : const SizedBox(),
             Expanded(child: content),
           ],
         ),
