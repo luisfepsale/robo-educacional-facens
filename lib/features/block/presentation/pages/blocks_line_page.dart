@@ -69,13 +69,18 @@ class _RepeaterBlock extends StatelessWidget {
     RepeaterEntity subList =
         context.read<BlocksInLineBloc>().state.blocks[listIndex];
 
-    final widget = Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFFFF8C00),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          width: 3,
-          color: const Color(0xFFA52E00),
+    final content = Container(
+      decoration: const BoxDecoration(
+        color: Color(0xFFFF8C00),
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(8),
+          bottomRight: Radius.circular(8),
+        ),
+        border: Border(
+          bottom: BorderSide(width: 2, color: Color(0xFFA52E00)),
+          top: BorderSide(width: 2, color: Color(0xFFA52E00)),
+          right: BorderSide(width: 2, color: Color(0xFFA52E00)),
+          left: BorderSide(width: 0, color: Color(0xFFA52E00)),
         ),
       ),
       child: Row(
@@ -125,6 +130,88 @@ class _RepeaterBlock extends StatelessWidget {
           )
         ],
       ),
+    );
+
+    final widget = Row(
+      children: [
+        Column(
+          children: [
+            Expanded(
+              child: Container(
+                width: 12,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFFF8C00),
+                  border: Border(
+                    bottom: BorderSide(width: 0, color: Color(0xFFA52E00)),
+                    top: BorderSide(width: 2, color: Color(0xFFA52E00)),
+                    right: BorderSide(width: 0, color: Color(0xFFA52E00)),
+                    left: BorderSide(width: 2, color: Color(0xFFA52E00)),
+                  ),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              width: 12,
+              height: 42,
+              decoration: const BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(6),
+                  bottomRight: Radius.circular(6),
+                ),
+                border: Border(
+                  bottom: BorderSide(width: 2, color: Color(0xFFA52E00)),
+                  top: BorderSide(width: 2, color: Color(0xFFA52E00)),
+                  right: BorderSide(width: 2, color: Color(0xFFA52E00)),
+                  left: BorderSide(width: 0, color: Color(0xFFA52E00)),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                width: 12,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFFF8C00),
+                  border: Border(
+                    bottom: BorderSide(width: 2, color: Color(0xFFA52E00)),
+                    top: BorderSide(width: 0, color: Color(0xFFA52E00)),
+                    right: BorderSide(width: 0, color: Color(0xFFA52E00)),
+                    left: BorderSide(width: 2, color: Color(0xFFA52E00)),
+                  ),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        content,
+        SizedOverflowBox(
+          size: const Size(0, 0),
+          alignment: const Alignment(-0.68, 0),
+          child: Container(
+            width: 13,
+            height: 42,
+            decoration: const BoxDecoration(
+              color: Color(0xFFFF8C00),
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(8),
+                bottomRight: Radius.circular(8),
+              ),
+              border: Border(
+                bottom: BorderSide(width: 2, color: Color(0xFFA52E00)),
+                top: BorderSide(width: 2, color: Color(0xFFA52E00)),
+                right: BorderSide(width: 2, color: Color(0xFFA52E00)),
+                left: BorderSide(width: 0, color: Color(0xFFA52E00)),
+              ),
+            ),
+          ),
+        )
+      ],
     );
 
     return SizedBox(
@@ -218,7 +305,7 @@ class DraggableBlock extends StatelessWidget {
         bool shouldShowPreview =
             (candidateData.isNotEmpty && candidateData[0] != positionOnLine);
         return SizedOverflowBox(
-          size: Size(shouldShowPreview ? 100 : 68, 0),
+          size: Size(shouldShowPreview ? 100 : 66, 0),
           alignment: Alignment.centerLeft,
           child: Draggable(
             data: positionOnLine,

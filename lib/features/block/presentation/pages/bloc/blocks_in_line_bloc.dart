@@ -6,12 +6,13 @@ import 'package:roboeducacional/features/block/domain/wrapper_entity.dart';
 part 'blocks_in_line_event.dart';
 part 'blocks_in_line_state.dart';
 
-const _repeater = RepeaterEntity(list: []);
+const _repeater =
+    RepeaterEntity(list: [BlockEntity(), BlockEntity(), BlockEntity()]);
 
 class BlocksInLineBloc extends Bloc<BlocksInLineEvent, BlocksInLineState> {
   BlocksInLineBloc()
       : super(const BlocksInLineState(
-          blocks: [BlockEntity(), _repeater, BlockEntity()],
+          blocks: [BlockEntity(), _repeater, BlockEntity(), BlockEntity()],
         )) {
     on<BlocksInLineEventRemoveBlock>(_removeBlock);
     on<BlocksInLineEventChangePositions>(_changeBlockPositions);
