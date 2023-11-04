@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:roboeducacional/features/bluetooth/presentations/dialogs/modal_search_device.dart';
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key});
@@ -41,7 +42,12 @@ class CustomAppBar extends StatelessWidget {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => const SearchDeviceDialog(),
+              );
+            },
             icon: SvgPicture.asset(
               'assets/startt.svg',
             ),
