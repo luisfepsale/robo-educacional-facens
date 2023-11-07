@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:roboeducacional/features/block/domain/block_entity.dart';
+import 'package:roboeducacional/features/block/domain/wrapper_entity.dart';
 import 'package:roboeducacional/features/block/presentation/pages/bloc/widgets/block_library/cubit/block_library_cubit.dart';
 import 'package:roboeducacional/features/block/presentation/pages/blocks_line_page.dart';
 
@@ -142,17 +143,57 @@ List<Widget> _createTabViews(
 
   final list = keys
       .map(
-        (e) => blockLibrary[e]!.map((e) {
-          final BlockEntity blockEntity = BlockEntity.fromMap(e);
+        (e) => blockLibrary[e]!.map((entry) {
+          if (e == 'controladores') {
+            const RepeaterEntity repeaterEntity = RepeaterEntity(
+              title: "Repetidor",
+            );
 
+            return BlocBuilder<BlockLibraryCubit, BlockLibraryState>(
+                builder: (context, state) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 110,
+                          width: 215,
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: Draggable(
+                                  data: repeaterEntity,
+                                  feedback: const SizedBox(
+                                    height: 110,
+                                    child: RepeaterWidget(
+                                      subList: repeaterEntity,
+                                    ),
+                                  ),
+                                  onDragStarted: () => context
+                                      .read<BlockLibraryCubit>()
+                                      .closeLibrary(),
+                                  child: const RepeaterWidget(
+                                    subList: repeaterEntity,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                repeaterEntity.title,
+                                textAlign: TextAlign.center,
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ));
+          }
+          final BlockEntity blockEntity = BlockEntity.fromMap(entry);
           return BlocBuilder<BlockLibraryCubit, BlockLibraryState>(
             builder: (context, state) {
               return Column(
                 children: [
                   Draggable(
-                    data: BlockEntity.fromMap(e),
+                    data: BlockEntity.fromMap(entry),
                     feedback: BlockWidget.halfOpacity(
-                      block: BlockEntity.fromMap(e),
+                      block: BlockEntity.fromMap(entry),
                     ),
                     onDragStarted: () =>
                         context.read<BlockLibraryCubit>().closeLibrary(),
@@ -162,7 +203,7 @@ List<Widget> _createTabViews(
                     ),
                   ),
                   Text(
-                    BlockEntity.fromMap(e).title,
+                    BlockEntity.fromMap(entry).title,
                     textAlign: TextAlign.center,
                   )
                 ],
@@ -173,14 +214,15 @@ List<Widget> _createTabViews(
       )
       .toList();
 
-  final gridList = list
-      .map((e) => GridView.count(
-            crossAxisCount: 3,
-            crossAxisSpacing: 15,
-            mainAxisSpacing: 15,
-            children: e.map((e) => e).toList(),
-          ))
-      .toList();
+  final gridList = [
+    GridView.count(
+      crossAxisCount: 3,
+      crossAxisSpacing: 15,
+      mainAxisSpacing: 15,
+      children: [...list[0]],
+    ),
+    ...list[1],
+  ];
 
   return gridList;
 }

@@ -88,7 +88,7 @@ class _TrashCan extends StatelessWidget {
             if (data is int) {
               context
                   .read<BlocksInLineBloc>()
-                  .add(BlocksInLineEventRemoveBlock(positionOnLine: data));
+                  .add(BlocksInLineEventRemoveBlock(removeId: data));
             }
           },
           builder: (_, __, ___) => SizedBox(

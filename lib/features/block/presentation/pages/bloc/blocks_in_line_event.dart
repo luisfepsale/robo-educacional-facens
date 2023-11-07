@@ -7,33 +7,74 @@ sealed class BlocksInLineEvent extends Equatable {
 
 class BlocksInLineEventAddBlock extends BlocksInLineEvent {
   final BlockEntity block;
-  final int positionOnLine;
+  final int? insertAfterId;
 
   const BlocksInLineEventAddBlock({
     required this.block,
-    required this.positionOnLine,
+    this.insertAfterId,
   });
 
   @override
-  List<Object?> get props => [block];
+  List<Object?> get props => [block, insertAfterId];
+}
+
+class BlocksInLineEventAddRepeater extends BlocksInLineEvent {
+  final RepeaterEntity repeaterEntity;
+  final int? insertAfterId;
+
+  const BlocksInLineEventAddRepeater({
+    required this.repeaterEntity,
+    this.insertAfterId,
+  });
+
+  @override
+  List<Object?> get props => [repeaterEntity, insertAfterId];
+}
+
+class BlocksInLineEventAddBlockInsideRepeater extends BlocksInLineEvent {
+  final BlockEntity block;
+  final int repeaterId;
+
+  const BlocksInLineEventAddBlockInsideRepeater({
+    required this.block,
+    required this.repeaterId,
+  });
+
+  @override
+  List<Object?> get props => [block, repeaterId];
+}
+
+class BlocksInLineEventMoveBlockToRepeater extends BlocksInLineEvent {
+  final int blockId;
+  final int repeaterId;
+
+  const BlocksInLineEventMoveBlockToRepeater({
+    required this.blockId,
+    required this.repeaterId,
+  });
+
+  @override
+  List<Object?> get props => [blockId, repeaterId];
 }
 
 class BlocksInLineEventChangePositions extends BlocksInLineEvent {
-  final int pastPositionOnLine;
-  final int positionOnLine;
+  final int? blockTargetId;
+  final int blockId;
 
-  const BlocksInLineEventChangePositions(
-      {required this.positionOnLine, required this.pastPositionOnLine});
+  const BlocksInLineEventChangePositions({
+    required this.blockTargetId,
+    required this.blockId,
+  });
 
   @override
-  List<Object?> get props => [pastPositionOnLine, positionOnLine];
+  List<Object?> get props => [blockTargetId, blockId];
 }
 
 class BlocksInLineEventRemoveBlock extends BlocksInLineEvent {
-  final int positionOnLine;
+  final int removeId;
 
-  const BlocksInLineEventRemoveBlock({required this.positionOnLine});
+  const BlocksInLineEventRemoveBlock({required this.removeId});
 
   @override
-  List<Object?> get props => [positionOnLine];
+  List<Object?> get props => [removeId];
 }

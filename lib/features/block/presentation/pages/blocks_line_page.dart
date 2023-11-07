@@ -69,6 +69,34 @@ class _RepeaterBlock extends StatelessWidget {
     RepeaterEntity subList =
         context.read<BlocksInLineBloc>().state.blocks[listIndex];
 
+    final widget = RepeaterWidget(
+      subList: subList,
+      listIndex: listIndex,
+    );
+
+    return SizedBox(
+      child: Draggable(
+        data: subList.id,
+        feedback: SizedBox(height: 110, child: widget),
+        childWhenDragging: Opacity(opacity: 0.5, child: widget),
+        child: widget,
+      ),
+    );
+  }
+}
+
+class RepeaterWidget extends StatelessWidget {
+  const RepeaterWidget({
+    super.key,
+    required this.subList,
+    this.listIndex,
+  });
+
+  final RepeaterEntity subList;
+  final int? listIndex;
+
+  @override
+  Widget build(BuildContext context) {
     final content = Container(
       decoration: const BoxDecoration(
         color: Color(0xFFFF8C00),
@@ -87,15 +115,46 @@ class _RepeaterBlock extends StatelessWidget {
         children: [
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 10),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemCount: subList.list.length,
-              itemBuilder: (context, index) => DraggableBlock(
-                block: subList.list[index],
-                positionOnLine: listIndex,
-              ),
-            ),
+            child: subList.list.isNotEmpty && listIndex != null
+                ? ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemCount: subList.list.length,
+                    itemBuilder: (context, index) => DraggableBlock(
+                      shouldAcceptRepeater: false,
+                      block: subList.list[index],
+                      positionOnLine: listIndex!,
+                    ),
+                  )
+                : Center(
+                    child: DragTarget(
+                      onAccept: (data) async {
+                        final bloc = context.read<BlocksInLineBloc>();
+                        if (data is BlockEntity && data is! RepeaterEntity) {
+                          final value = await CupertinoNumberPicket.show(
+                              context, data.value);
+
+                          bloc.add(BlocksInLineEventAddBlockInsideRepeater(
+                            block: (data).copyWith(value: value),
+                            repeaterId: subList.id,
+                          ));
+                        }
+                        if (data is int) {
+                          bloc.add(
+                            BlocksInLineEventMoveBlockToRepeater(
+                              repeaterId: subList.id,
+                              blockId: data,
+                            ),
+                          );
+                        }
+                      },
+                      builder: (context, candidateData, rejectedData) =>
+                          SvgPicture.asset(
+                        'assets/empty-block.svg',
+                        width: 80,
+                      ),
+                    ),
+                  ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -116,9 +175,9 @@ class _RepeaterBlock extends StatelessWidget {
                       color: const Color(0xFFA52E00),
                     ),
                   ),
-                  child: const Text(
-                    '10',
-                    style: TextStyle(
+                  child: Text(
+                    subList.value.toString(),
+                    style: const TextStyle(
                       fontSize: 20,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -132,7 +191,7 @@ class _RepeaterBlock extends StatelessWidget {
       ),
     );
 
-    final widget = Row(
+    return Row(
       children: [
         Column(
           children: [
@@ -213,15 +272,6 @@ class _RepeaterBlock extends StatelessWidget {
         )
       ],
     );
-
-    return SizedBox(
-      child: Draggable(
-        data: listIndex,
-        feedback: const SizedBox(),
-        childWhenDragging: Opacity(opacity: 0.5, child: widget),
-        child: widget,
-      ),
-    );
   }
 }
 
@@ -238,14 +288,22 @@ class _InitialBlock extends StatelessWidget {
 
           bloc.add(BlocksInLineEventAddBlock(
             block: (data).copyWith(value: value),
-            positionOnLine: -1,
+            insertAfterId: null,
+          ));
+        }
+        if (data is RepeaterEntity) {
+          final value = await CupertinoNumberPicket.show(context, data.value);
+
+          bloc.add(BlocksInLineEventAddRepeater(
+            repeaterEntity: data.copyWith(value: value),
+            insertAfterId: null,
           ));
         }
         if (data is int) {
           bloc.add(
             BlocksInLineEventChangePositions(
-              positionOnLine: 0,
-              pastPositionOnLine: data,
+              blockTargetId: null,
+              blockId: data,
             ),
           );
         }
@@ -272,10 +330,12 @@ class DraggableBlock extends StatelessWidget {
     super.key,
     required this.block,
     required this.positionOnLine,
+    this.shouldAcceptRepeater = true,
   });
 
   final int positionOnLine;
   final BlockEntity block;
+  final bool shouldAcceptRepeater;
 
   @override
   Widget build(BuildContext context) {
@@ -289,26 +349,34 @@ class DraggableBlock extends StatelessWidget {
             block: (data).copyWith(
               value: value,
             ),
-            positionOnLine: positionOnLine,
+            insertAfterId: block.id,
+          ));
+        }
+        if (data is RepeaterEntity && shouldAcceptRepeater) {
+          final value = await CupertinoNumberPicket.show(context, data.value);
+
+          bloc.add(BlocksInLineEventAddRepeater(
+            repeaterEntity: data.copyWith(value: value),
+            insertAfterId: block.id,
           ));
         }
         if (data is int) {
           bloc.add(
             BlocksInLineEventChangePositions(
-              positionOnLine: positionOnLine,
-              pastPositionOnLine: data,
+              blockTargetId: block.id,
+              blockId: data,
             ),
           );
         }
       },
       builder: (_, candidateData, ___) {
         bool shouldShowPreview =
-            (candidateData.isNotEmpty && candidateData[0] != positionOnLine);
+            (candidateData.isNotEmpty && candidateData[0] != block.id);
         return SizedOverflowBox(
           size: Size(shouldShowPreview ? 100 : 66, 0),
           alignment: Alignment.centerLeft,
           child: Draggable(
-            data: positionOnLine,
+            data: block.id,
             childWhenDragging: BlockWidget.halfOpacity(
               block: block,
               showValue: true,

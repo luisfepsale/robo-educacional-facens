@@ -8,6 +8,7 @@ class BlockEntity extends Equatable {
   final String description;
   final int value;
   final String link;
+  final int id;
 
   const BlockEntity({
     this.title = '',
@@ -15,10 +16,11 @@ class BlockEntity extends Equatable {
     this.description = '',
     this.value = 1,
     this.link = '',
+    this.id = 0,
   });
 
   @override
-  List<Object?> get props => [value, title, image, description, link];
+  List<Object?> get props => [id];
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -46,6 +48,7 @@ class BlockEntity extends Equatable {
     String? description,
     int? value,
     String? link,
+    int? id,
   }) {
     return BlockEntity(
       title: title ?? this.title,
@@ -53,6 +56,7 @@ class BlockEntity extends Equatable {
       description: description ?? this.description,
       value: value ?? this.value,
       link: link ?? this.link,
+      id: id ?? this.id,
     );
   }
 }
