@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:roboeducacional/features/block/presentation/pages/bloc/blocks_in_line_bloc.dart';
 import 'package:roboeducacional/features/bluetooth/presentations/dialogs/modal_search_device.dart';
 
 class CustomAppBar extends StatelessWidget {
@@ -41,16 +43,20 @@ class CustomAppBar extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          IconButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => const SearchDeviceDialog(),
+          BlocBuilder<BlocksInLineBloc, BlocksInLineState>(
+            builder: (context, state) {
+              return IconButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const SearchDeviceDialog(),
+                  );
+                },
+                icon: SvgPicture.asset(
+                  'assets/startt.svg',
+                ),
               );
             },
-            icon: SvgPicture.asset(
-              'assets/startt.svg',
-            ),
           ),
         ],
       ),

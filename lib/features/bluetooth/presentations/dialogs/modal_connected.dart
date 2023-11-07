@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:roboeducacional/features/block/presentation/pages/bloc/blocks_in_line_bloc.dart';
 import 'package:roboeducacional/features/bluetooth/presentations/dialogs/dialog_base.dart';
 import 'package:roboeducacional/features/bluetooth/presentations/dialogs/modal_look_robot.dart';
 
@@ -44,67 +48,85 @@ class ModalBluetoothConnected extends StatelessWidget {
             ],
           ),
           // const Spacer(),
-          Column(
-            children: [
-              StreamBuilder<List<BluetoothService>>(
-                stream: device.services,
-                initialData: const [],
-                builder: (c, snapshot) {
-                  return ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
+          BlocBuilder<BlocksInLineBloc, BlocksInLineState>(
+            builder: (context, state) {
+              return Column(
+                children: [
+                  StreamBuilder<List<BluetoothService>>(
+                    stream: device.services,
+                    initialData: const [],
+                    builder: (c, snapshot) {
+                      return ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          backgroundColor: const Color(0xFFFF6767),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 35, vertical: 5),
+                          shape: RoundedRectangleBorder(
+                            side: const BorderSide(
+                                width: 2, color: Color(0xFFA00000)),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: () {
+                          final blocks = context
+                              .read<BlocksInLineBloc>()
+                              .state
+                              .blocks
+                              .toList();
+
+                          List message = [];
+
+                          for (var el in blocks) {
+                            message.add(el.toMap());
+                          }
+                          snapshot.data!.first.characteristics.first
+                              .write(
+                                utf8.encode(json.encode(message)),
+                                withoutResponse: true,
+                              )
+                              .then((value) => showDialog(
+                                    context: context,
+                                    builder: (context) =>
+                                        const ModalLookRobot(),
+                                  ));
+                        },
+                        child: const Text(
+                          'Enviar',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      backgroundColor: const Color(0xFFFF6767),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 35, vertical: 5),
-                      shape: RoundedRectangleBorder(
-                        side: const BorderSide(
-                            width: 2, color: Color(0xFFA00000)),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
                     ),
                     onPressed: () {
-                      snapshot.data!.first.characteristics.first.write(
-                        [0],
-                        withoutResponse: true,
-                      ).then((value) => showDialog(
-                            context: context,
-                            builder: (context) => const ModalLookRobot(),
-                          ));
+                      device
+                          .disconnect()
+                          .then((value) => Navigator.of(context).pop());
                     },
                     child: const Text(
-                      'Enviar',
+                      'Desconectar',
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
+                        color: Color(0xFF474747),
+                        fontSize: 14,
                         fontFamily: 'Inter',
+                        decoration: TextDecoration.underline,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
-                  );
-                },
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-                onPressed: () {
-                  device
-                      .disconnect()
-                      .then((value) => Navigator.of(context).pop());
-                },
-                child: const Text(
-                  'Desconectar',
-                  style: TextStyle(
-                    color: Color(0xFF474747),
-                    fontSize: 14,
-                    fontFamily: 'Inter',
-                    decoration: TextDecoration.underline,
-                    fontWeight: FontWeight.w700,
                   ),
-                ),
-              ),
-            ],
+                ],
+              );
+            },
           )
         ],
       ),
