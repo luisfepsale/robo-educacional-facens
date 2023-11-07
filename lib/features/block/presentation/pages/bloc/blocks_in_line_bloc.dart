@@ -81,7 +81,6 @@ class BlocksInLineBloc extends Bloc<BlocksInLineEvent, BlocksInLineState> {
         blocks: [event.repeaterEntity.copyWith(id: counter++), ...state.blocks],
       ));
 
-      print(state.blocks.toList().toString());
       return;
     }
     emit(state.copyWith(
@@ -108,10 +107,17 @@ class BlocksInLineBloc extends Bloc<BlocksInLineEvent, BlocksInLineState> {
     Emitter<BlocksInLineState> emit,
   ) {
     if (event.blockTargetId == null) {
+      final block = _findItem(state.blocks.toList(), event.blockId);
+      if (block != null) {
+        final newCollection = _removeItem(state.blocks.toList(), block.id);
+        emit(state.copyWith(blocks: [block, ...newCollection]));
+      }
       return;
     }
 
-    print([event.blockTargetId, event.blockId]);
+    if (event.blockId == event.blockTargetId) {
+      return;
+    }
 
     emit(state.copyWith(
         blocks: _togglePositions(
