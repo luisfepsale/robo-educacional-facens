@@ -6,13 +6,51 @@ import 'package:roboeducacional/features/block/domain/wrapper_entity.dart';
 part 'blocks_in_line_event.dart';
 part 'blocks_in_line_state.dart';
 
-const _repeater = RepeaterEntity(title: "", list: []);
+class SimpleBlocObserver extends BlocObserver {
+  const SimpleBlocObserver();
+
+  @override
+  void onCreate(BlocBase<dynamic> bloc) {
+    super.onCreate(bloc);
+    print('onCreate -- bloc: ${bloc.runtimeType}');
+  }
+
+  @override
+  void onEvent(Bloc<dynamic, dynamic> bloc, Object? event) {
+    super.onEvent(bloc, event);
+    print('onEvent -- bloc: ${bloc.runtimeType}, event: $event');
+  }
+
+  @override
+  void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
+    super.onChange(bloc, change);
+    print('onChange -- bloc: ${bloc.runtimeType}, change: $change');
+  }
+
+  @override
+  void onTransition(
+    Bloc<dynamic, dynamic> bloc,
+    Transition<dynamic, dynamic> transition,
+  ) {
+    super.onTransition(bloc, transition);
+    print('onTransition -- bloc: ${bloc.runtimeType}, transition: $transition');
+  }
+
+  @override
+  void onError(BlocBase<dynamic> bloc, Object error, StackTrace stackTrace) {
+    print('onError -- bloc: ${bloc.runtimeType}, error: $error');
+    super.onError(bloc, error, stackTrace);
+  }
+
+  @override
+  void onClose(BlocBase<dynamic> bloc) {
+    super.onClose(bloc);
+    print('onClose -- bloc: ${bloc.runtimeType}');
+  }
+}
 
 class BlocksInLineBloc extends Bloc<BlocksInLineEvent, BlocksInLineState> {
-  BlocksInLineBloc()
-      : super(const BlocksInLineState(
-          blocks: [_repeater],
-        )) {
+  BlocksInLineBloc() : super(const BlocksInLineState(blocks: [])) {
     on<BlocksInLineEventRemoveBlock>(_removeBlock);
     on<BlocksInLineEventChangePositions>(_changeBlockPositions);
     on<BlocksInLineEventAddBlock>(_addBlock);
@@ -42,6 +80,8 @@ class BlocksInLineBloc extends Bloc<BlocksInLineEvent, BlocksInLineState> {
       emit(state.copyWith(
         blocks: [event.repeaterEntity.copyWith(id: counter++), ...state.blocks],
       ));
+
+      print(state.blocks.toList().toString());
       return;
     }
     emit(state.copyWith(
@@ -70,6 +110,8 @@ class BlocksInLineBloc extends Bloc<BlocksInLineEvent, BlocksInLineState> {
     if (event.blockTargetId == null) {
       return;
     }
+
+    print([event.blockTargetId, event.blockId]);
 
     emit(state.copyWith(
         blocks: _togglePositions(
@@ -156,11 +198,18 @@ List<dynamic> _insertAfter(
     final el = collection[i];
 
     if (el is RepeaterEntity) {
+      if (el.id == insertAfterId) {
+        final list = collection.toList()..insert(i + 1, blockToInsert);
+        newCollection = list;
+        return newCollection;
+      }
       final list = el.list.toList();
       final index = list.indexWhere((element) => element.id == insertAfterId);
-      list.insert(index + 1, blockToInsert);
-      newCollection[i] = el.copyWith(list: list);
-      return newCollection;
+      if (index >= 0) {
+        list.insert(index + 1, blockToInsert);
+        newCollection[i] = el.copyWith(list: list);
+        return newCollection;
+      }
     }
     if (el is BlockEntity && el.id == insertAfterId) {
       final list = collection.toList()..insert(i + 1, blockToInsert);

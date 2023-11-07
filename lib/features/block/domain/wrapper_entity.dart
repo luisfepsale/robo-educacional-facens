@@ -28,6 +28,7 @@ class RepeaterEntity extends Equatable {
       list: list ?? this.list,
       title: '',
       value: value ?? this.value,
+      id: id ?? this.id,
     );
   }
 

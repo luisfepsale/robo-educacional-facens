@@ -13,6 +13,8 @@ class BlocksHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Bloc.observer = const SimpleBlocObserver();
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(

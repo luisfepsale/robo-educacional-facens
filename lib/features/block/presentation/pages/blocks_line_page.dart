@@ -74,13 +74,54 @@ class _RepeaterBlock extends StatelessWidget {
       listIndex: listIndex,
     );
 
-    return SizedBox(
-      child: Draggable(
-        data: subList.id,
-        feedback: SizedBox(height: 110, child: widget),
-        childWhenDragging: Opacity(opacity: 0.5, child: widget),
-        child: widget,
-      ),
+    return DragTarget(
+      onAccept: (data) async {
+        final bloc = context.read<BlocksInLineBloc>();
+        if (data is BlockEntity) {
+          final value = await CupertinoNumberPicket.show(context, data.value);
+
+          bloc.add(BlocksInLineEventAddBlock(
+            block: (data).copyWith(value: value),
+            insertAfterId: subList.id,
+          ));
+        }
+        if (data is RepeaterEntity) {
+          final value = await CupertinoNumberPicket.show(context, data.value);
+
+          bloc.add(BlocksInLineEventAddRepeater(
+            repeaterEntity: data.copyWith(value: value),
+            insertAfterId: subList.id,
+          ));
+        }
+        if (data is int) {
+          bloc.add(
+            BlocksInLineEventChangePositions(
+              blockTargetId: subList.id,
+              blockId: data,
+            ),
+          );
+        }
+      },
+      builder: (context, candidateData, rejectedData) {
+        bool shouldShowPreview =
+            (candidateData.isNotEmpty && candidateData[0] != subList.id);
+
+        return Row(
+          children: [
+            Draggable(
+              data: subList.id,
+              feedback: SizedBox(height: 110, child: widget),
+              childWhenDragging: Opacity(opacity: 0.5, child: widget),
+              child: widget,
+            ),
+            shouldShowPreview
+                ? const SizedBox(
+                    width: 20,
+                  )
+                : const SizedBox(),
+          ],
+        );
+      },
     );
   }
 }
