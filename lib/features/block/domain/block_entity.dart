@@ -25,10 +25,7 @@ class BlockEntity extends Equatable {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'title': title,
-      'image': image,
-      'description': description,
       'value': value,
-      'link': link,
     };
   }
 

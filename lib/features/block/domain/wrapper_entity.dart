@@ -35,7 +35,9 @@ class RepeaterEntity extends Equatable {
   @override
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'list': list.map((x) => x.toMap()).toList(),
+      'title': 'Repetidor',
+      'value': value,
+      'sequencia': list.map((x) => x.toMap()).toList(),
     };
   }
 

@@ -5,11 +5,11 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
+    return const Drawer(
       child: Material(
-        color: const Color(0xFF2E9AD1),
+        color: Color(0xFF2E9AD1),
         child: Column(
-          children: const [
+          children: [
             DrawerHeader(
                 child: Icon(
               Icons.build_circle,

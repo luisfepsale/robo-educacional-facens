@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,109 +8,81 @@ import 'package:roboeducacional/features/block/presentation/pages/bloc/blocks_in
 import 'package:roboeducacional/features/bluetooth/presentations/dialogs/dialog_base.dart';
 import 'package:roboeducacional/features/bluetooth/presentations/dialogs/modal_look_robot.dart';
 
-class ModalBluetoothConnected extends StatelessWidget {
+class ModalBluetoothConnected extends StatefulWidget {
   const ModalBluetoothConnected({super.key, required this.device});
 
   final BluetoothDevice device;
 
   @override
+  State<ModalBluetoothConnected> createState() =>
+      _ModalBluetoothConnectedState();
+}
+
+class _ModalBluetoothConnectedState extends State<ModalBluetoothConnected> {
+  @override
+  void initState() {
+    super.initState();
+    widget.device.discoverServices();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return DialogBase(
       showTitle: false,
-      content: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
+      content: BlocBuilder<BlocksInLineBloc, BlocksInLineState>(
+        builder: (context, state) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Image.asset('assets/robot-2.png'),
-              const SizedBox(height: 20),
-              const Text(
-                'Robô conectado!',
-                style: TextStyle(
-                  color: Color(0xFF2580AF),
-                  fontSize: 22,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w700,
-                  height: 1,
-                ),
+              Column(
+                children: [
+                  Image.asset('assets/robot-2.png'),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Robô conectado!',
+                    style: TextStyle(
+                      color: Color(0xFF2580AF),
+                      fontSize: 22,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w700,
+                      height: 1,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Clique no botão “Enviar” para que o robô faça a sequência lógica que você desenvolveu!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0xFF444444),
+                      fontSize: 14,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w700,
+                      height: 0,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-              const Text(
-                'Clique no botão “Enviar” para que o robô faça a sequência lógica que você desenvolveu!',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xFF444444),
-                  fontSize: 14,
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w700,
-                  height: 0,
-                ),
-              ),
-            ],
-          ),
-          // const Spacer(),
-          BlocBuilder<BlocksInLineBloc, BlocksInLineState>(
-            builder: (context, state) {
-              return Column(
+              // const Spacer(),
+              Column(
                 children: [
                   StreamBuilder<List<BluetoothService>>(
-                    stream: device.services,
-                    initialData: const [],
-                    builder: (c, snapshot) {
-                      return ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          backgroundColor: const Color(0xFFFF6767),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 35, vertical: 5),
-                          shape: RoundedRectangleBorder(
-                            side: const BorderSide(
-                                width: 2, color: Color(0xFFA00000)),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onPressed: () {
-                          final blocks = context
-                              .read<BlocksInLineBloc>()
-                              .state
-                              .blocks
-                              .toList();
+                      stream: widget.device.services,
+                      initialData: const [],
+                      builder: (c, snapshot) {
+                        if (snapshot.data!.isNotEmpty) {
+                          return _BluetoohSendButton(
+                            services: snapshot.data!,
+                          );
+                        }
 
-                          List message = [];
-
-                          for (var el in blocks) {
-                            message.add(el.toMap());
-                          }
-                          snapshot.data!.first.characteristics.first
-                              .write(
-                                utf8.encode(json.encode(message)),
-                                withoutResponse: true,
-                              )
-                              .then((value) => showDialog(
-                                    context: context,
-                                    builder: (context) =>
-                                        const ModalLookRobot(),
-                                  ));
-                        },
-                        child: const Text(
-                          'Enviar',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                        return const Center(child: CircularProgressIndicator());
+                      }),
                   TextButton(
                     style: TextButton.styleFrom(
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
                     onPressed: () {
-                      device
+                      widget.device
                           .disconnect()
                           .then((value) => Navigator.of(context).pop());
                     },
@@ -125,10 +98,60 @@ class ModalBluetoothConnected extends StatelessWidget {
                     ),
                   ),
                 ],
-              );
-            },
-          )
-        ],
+              )
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _BluetoohSendButton extends StatelessWidget {
+  const _BluetoohSendButton({super.key, required this.services});
+
+  final List<BluetoothService> services;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        backgroundColor: const Color(0xFFFF6767),
+        padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 5),
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 2, color: Color(0xFFA00000)),
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      onPressed: () {
+        final blocks = context.read<BlocksInLineBloc>().state.blocks.toList();
+
+        List message = [];
+
+        for (var el in blocks) {
+          message.add(el.toMap());
+        }
+
+        for (var service in services) {
+          for (var characteristics in service.characteristics) {
+            print([characteristics.uuid, characteristics.properties.write]);
+            if (characteristics.properties.write) {
+              characteristics.write(utf8.encode(json.encode(message)),
+                  withoutResponse: true);
+            }
+          }
+        }
+      },
+      child: const Text(
+        'Enviar',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 22,
+          fontFamily: 'Inter',
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }

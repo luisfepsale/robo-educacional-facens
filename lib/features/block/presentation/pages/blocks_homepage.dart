@@ -15,42 +15,32 @@ class BlocksHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Bloc.observer = const SimpleBlocObserver();
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => BlocksInLineBloc(),
-        ),
-        BlocProvider(
-          create: (context) => BlockLibraryCubit(),
-        ),
-      ],
-      child: const Scaffold(
-        backgroundColor: Color(0xFFE9E9E9),
-        body: Scaffold(
-          body: Stack(
-            children: [
-              Column(
-                children: [
-                  CustomAppBar(),
-                  Expanded(
-                    child: Row(
-                      children: [
-                        BlocksInLine(),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return const Scaffold(
+      backgroundColor: Color(0xFFE9E9E9),
+      body: Scaffold(
+        body: Stack(
+          children: [
+            Column(
+              children: [
+                CustomAppBar(),
+                Expanded(
+                  child: Row(
                     children: [
-                      _AddButton(),
-                      _TrashCan(),
+                      BlocksInLine(),
                     ],
-                  )
-                ],
-              ),
-              BlocksLibrary(),
-            ],
-          ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _AddButton(),
+                    _TrashCan(),
+                  ],
+                )
+              ],
+            ),
+            BlocksLibrary(),
+          ],
         ),
       ),
     );
