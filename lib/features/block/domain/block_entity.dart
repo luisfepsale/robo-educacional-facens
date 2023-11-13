@@ -22,11 +22,8 @@ class BlockEntity extends Equatable {
   @override
   List<Object?> get props => [id];
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'title': title,
-      'value': value,
-    };
+  List<String> toCode() {
+    return [title.substring(0, 1).toLowerCase(), value.toString()];
   }
 
   factory BlockEntity.fromMap(Map<String, dynamic> map) {

@@ -1,12 +1,11 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:roboeducacional/features/block/presentation/pages/bloc/blocks_in_line_bloc.dart';
 import 'package:roboeducacional/features/bluetooth/presentations/dialogs/dialog_base.dart';
-import 'package:roboeducacional/features/bluetooth/presentations/dialogs/modal_look_robot.dart';
 
 class ModalBluetoothConnected extends StatefulWidget {
   const ModalBluetoothConnected({super.key, required this.device});
@@ -108,7 +107,7 @@ class _ModalBluetoothConnectedState extends State<ModalBluetoothConnected> {
 }
 
 class _BluetoohSendButton extends StatelessWidget {
-  const _BluetoohSendButton({super.key, required this.services});
+  const _BluetoohSendButton({required this.services});
 
   final List<BluetoothService> services;
 
@@ -128,18 +127,23 @@ class _BluetoohSendButton extends StatelessWidget {
       onPressed: () {
         final blocks = context.read<BlocksInLineBloc>().state.blocks.toList();
 
-        List message = [];
+        List list = [];
 
         for (var el in blocks) {
-          message.add(el.toMap());
+          list.addAll(el.toCode());
         }
+        String jsonMessage = json.encode(list);
+        List chunkedMessage = jsonMessage.split('').slices(20).toList();
 
-        for (var service in services) {
-          for (var characteristics in service.characteristics) {
-            print([characteristics.uuid, characteristics.properties.write]);
-            if (characteristics.properties.write) {
-              characteristics.write(utf8.encode(json.encode(message)),
-                  withoutResponse: true);
+        for (var message in chunkedMessage) {
+          for (var service in services) {
+            for (var characteristics in service.characteristics) {
+              if (characteristics.properties.write) {
+                characteristics.write(
+                  utf8.encode(message),
+                  withoutResponse: true,
+                );
+              }
             }
           }
         }
