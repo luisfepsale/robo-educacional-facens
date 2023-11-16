@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:roboeducacional/custom_app_bar.dart';
+import 'package:roboeducacional/custom_drawer.dart';
 import 'package:roboeducacional/features/block/domain/block_entity.dart';
 import 'package:roboeducacional/features/block/presentation/pages/bloc/blocks_in_line_bloc.dart';
 import 'package:roboeducacional/features/block/presentation/pages/bloc/widgets/block_library/block_library.dart';
@@ -13,35 +14,32 @@ class BlocksHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Bloc.observer = const SimpleBlocObserver();
-
     return const Scaffold(
+      drawer: CustomDrawer(),
       backgroundColor: Color(0xFFE9E9E9),
-      body: Scaffold(
-        body: Stack(
-          children: [
-            Column(
-              children: [
-                CustomAppBar(),
-                Expanded(
-                  child: Row(
-                    children: [
-                      BlocksInLine(),
-                    ],
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              CustomAppBar(),
+              Expanded(
+                child: Row(
                   children: [
-                    _AddButton(),
-                    _TrashCan(),
+                    BlocksInLine(),
                   ],
-                )
-              ],
-            ),
-            BlocksLibrary(),
-          ],
-        ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _AddButton(),
+                  _TrashCan(),
+                ],
+              )
+            ],
+          ),
+          BlocksLibrary(),
+        ],
       ),
     );
   }

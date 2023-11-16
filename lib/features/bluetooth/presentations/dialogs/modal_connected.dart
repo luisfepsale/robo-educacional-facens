@@ -139,6 +139,7 @@ class _BluetoohSendButton extends StatelessWidget {
           for (var service in services) {
             for (var characteristics in service.characteristics) {
               if (characteristics.properties.write) {
+                print(chunkedMessage);
                 characteristics.write(
                   utf8.encode(message),
                   withoutResponse: true,
