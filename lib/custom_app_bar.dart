@@ -36,7 +36,7 @@ class CustomAppBar extends StatelessWidget {
             ),
           ),
           const Text(
-            "Project Name",
+            "Fireboy",
             style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 20,
@@ -60,10 +60,6 @@ class CustomAppBar extends StatelessWidget {
           ),
         ],
       ),
-      // child: Row(
-      //   icon: Icon(Icons.menu)
-      //   Text("Name Project")
-      // ),
     );
   }
 }

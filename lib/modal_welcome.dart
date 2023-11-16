@@ -22,9 +22,9 @@ class ModalWelcome extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
+            const Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
+              children: [
                 Text(
                   "Bem-vindo ao projeto 'Robô Educacional' ",
                   style: TextStyle(
@@ -35,7 +35,7 @@ class ModalWelcome extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
+                  "Este é um projeto de trabalho de conclusão de curso da FACENS (Faculdade de Engenharia de Sorocaba ), realizado pelos alunos: Gabriela Miranda Domingues 190634, Lívia Sayuri Chinem Moreno 190374, Luís Felipe Martins Salinas 190380. O objetivo deste trabalho é apresentar uma nova maneira de ensino nas escolas brasileiras, utilizando tecnologias atuais e economicas. Agrademos a todos que participaram do progresso no desenvolvimento deste projeto. ",
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 16,

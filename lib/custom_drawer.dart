@@ -23,54 +23,9 @@ class CustomDrawer extends StatelessWidget {
                 size: 25,
               ),
               title: Text(
-                'Novo Arquivo',
+                'Sobre o Projeto',
                 style: TextStyle(fontSize: 20, color: Colors.white),
               ),
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.folder_copy,
-                color: Colors.white,
-                size: 25,
-              ),
-              title: Text('Carregar Arquivo',
-                  style: TextStyle(fontSize: 20, color: Colors.white)),
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.save_alt,
-                color: Colors.white,
-                size: 25,
-              ),
-              title: Text('Salvar no Computador',
-                  style: TextStyle(fontSize: 20, color: Colors.white)),
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.info_outline,
-                color: Colors.white,
-                size: 25,
-              ),
-              title: Text('Sobre',
-                  style: TextStyle(fontSize: 20, color: Colors.white)),
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.content_paste,
-                color: Colors.white,
-                size: 25,
-              ),
-              title: Text('Termos de Uso',
-                  style: TextStyle(fontSize: 20, color: Colors.white)),
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.help_outline,
-                color: Colors.white,
-                size: 25,
-              ),
-              title: Text('Ajuda',
-                  style: TextStyle(fontSize: 20, color: Colors.white)),
             ),
           ],
         ),
