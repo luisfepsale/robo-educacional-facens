@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:roboeducacional/features/block/domain/block_entity.dart';
 
-class ModalInspecao extends StatelessWidget {
-  const ModalInspecao({
+class ModalInspecaoBlock extends StatelessWidget {
+  const ModalInspecaoBlock({
     super.key,
     required this.block,
   });
 
-  final block;
+  final BlockEntity block;
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +29,13 @@ class ModalInspecao extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  'Classe: Nome do movimento',
-                  style: TextStyle(
+                Text(
+                  'Classe: ${block.title}',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
                     color: Color(0xFF2E9AD1),
@@ -50,19 +53,24 @@ class ModalInspecao extends StatelessWidget {
                 const SizedBox(height: 20),
               ],
             ),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text('Ajuda',
+                TextButton(
+                  style: TextButton.styleFrom(
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'Fechar',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF2E9AD1),
-                    )),
-                Icon(
-                  Icons.question_mark,
-                  color: Color(0xFF2E9AD1),
-                  size: 28,
+                    ),
+                  ),
                 )
               ],
             )

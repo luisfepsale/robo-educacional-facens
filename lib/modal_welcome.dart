@@ -27,6 +27,7 @@ class ModalWelcome extends StatelessWidget {
               children: [
                 Text(
                   "Bem-vindo ao projeto 'Robô Educacional' ",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -49,7 +50,9 @@ class ModalWelcome extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                   style: const ButtonStyle(
                       backgroundColor:
                           MaterialStatePropertyAll(Color(0xFF2E9AD1))),
