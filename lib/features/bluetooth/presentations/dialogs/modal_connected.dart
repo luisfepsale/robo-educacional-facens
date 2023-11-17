@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -133,15 +132,13 @@ class _BluetoohSendButton extends StatelessWidget {
           list.addAll(el.toCode());
         }
         String jsonMessage = json.encode(list);
-        List chunkedMessage = jsonMessage.split('').slices(20).toList();
 
-        for (var message in chunkedMessage) {
-          for (var service in services) {
-            for (var characteristics in service.characteristics) {
-              if (characteristics.properties.write) {
-                print([message, utf8.encode(message)]);
+        for (var service in services) {
+          for (var characteristics in service.characteristics) {
+            if (characteristics.properties.write) {
+              for (var i = 0; i < jsonMessage.length; i++) {
                 characteristics.write(
-                  utf8.encode(message),
+                  utf8.encode(jsonMessage[i]),
                   withoutResponse: true,
                 );
               }
