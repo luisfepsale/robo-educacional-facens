@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 
-class ModalInspecao extends StatelessWidget {
-  const ModalInspecao({
+class ModalInspecaoRepeater extends StatelessWidget {
+  const ModalInspecaoRepeater({
     super.key,
-    required this.block,
   });
-
-  final block;
 
   @override
   Widget build(BuildContext context) {
@@ -19,50 +16,55 @@ class ModalInspecao extends StatelessWidget {
             borderRadius: BorderRadius.circular(20.0),
             border: Border.all(
               width: 3,
-              color: Colors.blue,
+              color: const Color(0xFFFF8C00),
             )),
         padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            const Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
-                  'Classe: Nome do movimento',
+                Text(
+                  'Classe: Repetidor',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
-                    color: Color(0xFF2E9AD1),
+                    color: Color(0xFFFF8C00),
                   ),
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 Text(
-                  block.description,
-                  style: const TextStyle(
+                  'Este bloco tem a função de repetir os blocos que esta dentro dele.',
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
                     color: Color(0xFF585858),
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
               ],
             ),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text('Ajuda',
+                TextButton(
+                  style: TextButton.styleFrom(
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'Fechar',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF2E9AD1),
-                    )),
-                Icon(
-                  Icons.question_mark,
-                  color: Color(0xFF2E9AD1),
-                  size: 28,
+                      color: Color(0xFFFF8C00),
+                    ),
+                  ),
                 )
               ],
             )

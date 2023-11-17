@@ -8,9 +8,27 @@ import 'package:roboeducacional/features/block/presentation/pages/bloc/blocks_in
 import 'package:roboeducacional/features/block/presentation/pages/bloc/widgets/block_library/block_library.dart';
 import 'package:roboeducacional/features/block/presentation/pages/bloc/widgets/block_library/cubit/block_library_cubit.dart';
 import 'package:roboeducacional/features/block/presentation/pages/blocks_line_page.dart';
+import 'package:roboeducacional/modal_welcome.dart';
 
-class BlocksHomePage extends StatelessWidget {
+class BlocksHomePage extends StatefulWidget {
   const BlocksHomePage({super.key});
+
+  @override
+  State<BlocksHomePage> createState() => _BlocksHomePageState();
+}
+
+class _BlocksHomePageState extends State<BlocksHomePage> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showDialog(
+        context: context,
+        builder: (context) => const ModalWelcome(),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

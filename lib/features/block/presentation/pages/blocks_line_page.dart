@@ -5,6 +5,8 @@ import 'package:roboeducacional/features/block/domain/block_entity.dart';
 import 'package:roboeducacional/features/block/domain/wrapper_entity.dart';
 import 'package:roboeducacional/features/block/presentation/pages/bloc/blocks_in_line_bloc.dart';
 import 'package:roboeducacional/features/block/presentation/pages/bloc/widgets/cupertino_number_picker/cupertino_number_picker.dart';
+import 'package:roboeducacional/features/inspect/modal_block.dart';
+import 'package:roboeducacional/features/inspect/modal_repeater.dart';
 
 class BlocksInLine extends StatelessWidget {
   const BlocksInLine({super.key});
@@ -73,7 +75,6 @@ class _RepeaterBlock extends StatelessWidget {
       subList: subList,
       listIndex: listIndex,
     );
-
     return DragTarget(
       onAccept: (data) async {
         final bloc = context.read<BlocksInLineBloc>();
@@ -103,25 +104,47 @@ class _RepeaterBlock extends StatelessWidget {
         }
       },
       builder: (context, candidateData, rejectedData) {
-        bool shouldShowPreview =
-            (candidateData.isNotEmpty && candidateData[0] != subList.id);
-
-        return Row(
-          children: [
-            Draggable(
-              data: subList.id,
-              feedback: SizedBox(height: 110, child: widget),
-              childWhenDragging: Opacity(opacity: 0.5, child: widget),
-              child: widget,
-            ),
-            shouldShowPreview
-                ? const SizedBox(
-                    width: 20,
-                  )
-                : const SizedBox(),
-          ],
+        final r = GestureDetector(
+          onLongPress: () {
+            showDialog(
+                context: context,
+                builder: (context) => const ModalInspecaoRepeater());
+          },
+          child: Draggable(
+            data: subList.id,
+            feedback: SizedBox(height: 110, child: widget),
+            childWhenDragging: Opacity(opacity: 0.5, child: widget),
+            child: widget,
+          ),
         );
+
+        if (candidateData.isNotEmpty) {
+          return Row(
+            children: [
+              r,
+              const _PreviewBlock(),
+            ],
+          );
+        } else {
+          return r;
+        }
       },
+    );
+  }
+}
+
+class _PreviewBlock extends StatelessWidget {
+  const _PreviewBlock();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedOverflowBox(
+      alignment: Alignment.centerLeft,
+      size: const Size(70, 0),
+      child: SvgPicture.asset(
+        'assets/preview.svg',
+        width: 80,
+      ),
     );
   }
 }
@@ -169,6 +192,7 @@ class RepeaterWidget extends StatelessWidget {
                   )
                 : Center(
                     child: DragTarget(
+                      hitTestBehavior: HitTestBehavior.opaque,
                       onAccept: (data) async {
                         final bloc = context.read<BlocksInLineBloc>();
                         if (data is BlockEntity && data is! RepeaterEntity) {
@@ -189,11 +213,23 @@ class RepeaterWidget extends StatelessWidget {
                           );
                         }
                       },
-                      builder: (context, candidateData, rejectedData) =>
-                          SvgPicture.asset(
-                        'assets/empty-block.svg',
-                        width: 80,
-                      ),
+                      builder: (context, candidateData, rejectedData) {
+                        Widget widget;
+
+                        if (candidateData.isNotEmpty) {
+                          widget = const _PreviewBlock();
+                        } else {
+                          widget = SvgPicture.asset(
+                            'assets/empty-block.svg',
+                          );
+                        }
+
+                        return SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: widget,
+                        );
+                      },
                     ),
                   ),
           ),
@@ -227,7 +263,7 @@ class RepeaterWidget extends StatelessWidget {
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -351,15 +387,20 @@ class _InitialBlock extends StatelessWidget {
       },
       builder: (_, candidateData, __) {
         bool shouldShowPreview = (candidateData.isNotEmpty);
-        return SizedOverflowBox(
-          size: Size(shouldShowPreview ? 115 : 95, 0),
-          alignment: Alignment.centerLeft,
-          child: Center(
-            child: SizedBox(
-              width: 110,
-              child: SvgPicture.asset('assets/bloco-inicial.svg'),
+        return Row(
+          children: [
+            SizedOverflowBox(
+              size: const Size(95, 0),
+              alignment: Alignment.centerLeft,
+              child: Center(
+                child: SizedBox(
+                  width: 110,
+                  child: SvgPicture.asset('assets/bloco-inicial.svg'),
+                ),
+              ),
             ),
-          ),
+            shouldShowPreview ? const _PreviewBlock() : const SizedBox()
+          ],
         );
       },
     );
@@ -413,23 +454,43 @@ class DraggableBlock extends StatelessWidget {
       builder: (_, candidateData, ___) {
         bool shouldShowPreview =
             (candidateData.isNotEmpty && candidateData[0] != block.id);
-        return SizedOverflowBox(
-          size: Size(shouldShowPreview ? 100 : 66, 0),
+
+        final widget = SizedOverflowBox(
+          size: const Size(66, 0),
           alignment: Alignment.centerLeft,
-          child: Draggable(
-            data: block.id,
-            childWhenDragging: BlockWidget.halfOpacity(
-              block: block,
-              showValue: true,
+          child: GestureDetector(
+            onLongPress: () {
+              showDialog(
+                context: context,
+                builder: (context) => ModalInspecaoBlock(block: block),
+              );
+            },
+            child: Draggable(
+              data: block.id,
+              childWhenDragging: BlockWidget.halfOpacity(
+                block: block,
+                showValue: true,
+              ),
+              feedback: Center(
+                  child: BlockWidget.halfOpacity(
+                block: block,
+                showValue: true,
+              )),
+              child: BlockWidget(block: block, showValue: true),
             ),
-            feedback: Center(
-                child: BlockWidget.halfOpacity(
-              block: block,
-              showValue: true,
-            )),
-            child: BlockWidget(block: block, showValue: true),
           ),
         );
+
+        if (shouldShowPreview) {
+          return Row(
+            children: [
+              widget,
+              const _PreviewBlock(),
+            ],
+          );
+        } else {
+          return widget;
+        }
       },
     );
   }
